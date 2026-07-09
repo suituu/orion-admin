@@ -1,0 +1,150 @@
+<template>
+  <div>
+
+    <div class="page-header">
+      <h2>License Management</h2>
+    </div>
+
+
+    <el-table
+      :data="licenses"
+      border
+      style="width:100%;margin-top:20px;"
+    >
+
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="70"
+      />
+
+
+      <el-table-column
+        prop="license_key"
+        label="License Key"
+        width="230"
+      />
+
+
+      <el-table-column
+        prop="device_id"
+        label="Device ID"
+        width="200"
+      />
+
+
+      <el-table-column
+        label="Status"
+        width="120"
+      >
+
+        <template #default="scope">
+
+          <el-tag
+            v-if="scope.row.status === 'active'"
+            type="success"
+          >
+            Active
+          </el-tag>
+
+
+          <el-tag
+            v-else-if="scope.row.status === 'revoked'"
+            type="danger"
+          >
+            Revoked
+          </el-tag>
+
+
+          <el-tag
+            v-else
+            type="info"
+          >
+            Unused
+          </el-tag>
+
+        </template>
+
+      </el-table-column>
+
+
+      <el-table-column
+        prop="activated_count"
+        label="Activated"
+        width="100"
+      />
+
+
+      <el-table-column
+        prop="activated_at"
+        label="Activated At"
+        width="180"
+      />
+
+
+      <el-table-column
+        prop="created_at"
+        label="Created At"
+        width="180"
+      />
+
+
+    </el-table>
+
+
+  </div>
+</template>
+
+
+
+<script setup>
+
+import { ref, onMounted } from "vue";
+
+import { getLicenses } from "../api/license";
+
+
+const licenses = ref([]);
+
+
+
+async function loadLicenses(){
+
+    try {
+
+        const res = await getLicenses();
+
+        licenses.value = res.data.data;
+
+
+    } catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+
+
+onMounted(() => {
+
+    loadLicenses();
+
+});
+
+</script>
+
+
+
+<style scoped>
+
+.page-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+}
+
+</style>
