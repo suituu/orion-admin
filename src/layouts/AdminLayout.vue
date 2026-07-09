@@ -15,6 +15,10 @@
         <el-menu-item index="/">
           Dashboard
         </el-menu-item>
+       
+       <el-menu-item index="/products">
+          Products
+       </el-menu-item>
 
         <el-menu-item index="/devices">
           Devices
