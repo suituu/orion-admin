@@ -27,9 +27,23 @@
 
 
       <el-table-column
+        prop="username"
+        label="User"
+        width="140"
+      />
+
+
+      <el-table-column
         prop="model"
         label="Model"
         width="140"
+      />
+
+
+      <el-table-column
+        prop="product"
+        label="Product"
+        width="160"
       />
 
 
@@ -48,6 +62,42 @@
         <template #default="scope">
 
           {{ scope.row.license_key || "None" }}
+
+        </template>
+
+      </el-table-column>
+
+
+      <el-table-column
+        label="License Status"
+        width="140"
+      >
+
+        <template #default="scope">
+
+          <el-tag
+            v-if="scope.row.license_status === 'active'"
+            type="success"
+          >
+            Active
+          </el-tag>
+
+
+          <el-tag
+            v-else-if="scope.row.license_status === 'revoked'"
+            type="danger"
+          >
+            Revoked
+          </el-tag>
+
+
+          <el-tag
+            v-else
+            type="info"
+          >
+            None
+          </el-tag>
+
 
         </template>
 
@@ -84,6 +134,13 @@
       <el-table-column
         prop="last_seen"
         label="Last Heartbeat"
+        width="180"
+      />
+
+
+      <el-table-column
+        prop="activated_at"
+        label="Activated At"
         width="180"
       />
 
