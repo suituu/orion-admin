@@ -31,3 +31,14 @@ export function getOrders(){
     );
 
 }
+export function payOrder(id){
+
+    return axios.put(
+        `${API_BASE}/api/admin/orders/${id}/pay`,
+        {},
+        {
+            headers:getAuthHeaders(),
+        }
+    );
+
+}

@@ -77,10 +77,10 @@
             {{ scope.row.status }}
           </el-tag>
 
+
         </template>
 
       </el-table-column>
-
 
 
       <el-table-column
@@ -88,6 +88,28 @@
         label="Created At"
         width="180"
       />
+
+
+      <el-table-column
+        label="Action"
+        width="140"
+      >
+
+        <template #default="scope">
+
+          <el-button
+            v-if="scope.row.status === 'created'"
+            type="primary"
+            size="small"
+            @click="handlePay(scope.row.id)"
+          >
+            Mark Paid
+          </el-button>
+
+
+        </template>
+
+      </el-table-column>
 
 
     </el-table>
@@ -102,9 +124,12 @@
 
 import { ref, onMounted } from "vue";
 
+
 import {
-  getOrders
+  getOrders,
+  payOrder
 } from "../api/order";
+
 
 
 const orders = ref([]);
@@ -113,26 +138,63 @@ const orders = ref([]);
 
 async function loadOrders(){
 
-    try{
+  try{
 
-        const res = await getOrders();
+    const res = await getOrders();
 
-        orders.value = res.data.data;
+    orders.value = res.data.data;
 
 
-    }catch(err){
+  }catch(err){
 
-        console.error(err);
+    console.error(err);
 
-    }
+  }
 
 }
 
 
 
+
+async function handlePay(id){
+
+  if(!confirm("Confirm payment for this order?")){
+
+    return;
+
+  }
+
+
+  try{
+
+    const res = await payOrder(id);
+
+
+    alert(
+      "Payment success\nLicense: "
+      + res.data.data.license_key
+    );
+
+
+    await loadOrders();
+
+
+  }catch(err){
+
+    console.error(err);
+
+    alert("Payment failed");
+
+  }
+
+}
+
+
+
+
 onMounted(()=>{
 
-    loadOrders();
+  loadOrders();
 
 });
 
@@ -145,9 +207,9 @@ onMounted(()=>{
 
 .page-header{
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 
 }
 

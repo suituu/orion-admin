@@ -27,6 +27,27 @@
 
 
       <el-table-column
+        prop="username"
+        label="User"
+        width="150"
+      />
+
+
+      <el-table-column
+        prop="order_no"
+        label="Order No"
+        width="220"
+      />
+
+
+      <el-table-column
+        prop="product"
+        label="Product"
+        width="160"
+      />
+
+
+      <el-table-column
         prop="device_id"
         label="Device ID"
         width="200"
