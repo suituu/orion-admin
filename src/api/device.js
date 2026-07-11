@@ -28,3 +28,15 @@ export function getDevice(deviceId) {
         }
     );
 }
+
+
+export function getDeviceOtaLogs(deviceId) {
+
+    return axios.get(
+        `${API_BASE}/api/devices/${deviceId}/ota-logs`,
+        {
+            headers: getAuthHeaders(),
+        }
+    );
+
+}

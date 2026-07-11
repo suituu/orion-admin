@@ -1,0 +1,116 @@
+<template>
+  <div>
+
+    <h2>License Detail</h2>
+
+
+    <el-card v-if="license">
+
+      <el-descriptions
+        title="License Information"
+        border
+      >
+
+        <el-descriptions-item label="License Key">
+          {{ license.license_key }}
+        </el-descriptions-item>
+
+
+        <el-descriptions-item label="Status">
+          {{ license.status }}
+        </el-descriptions-item>
+
+
+        <el-descriptions-item label="Device">
+          {{ license.device_id || "None" }}
+        </el-descriptions-item>
+
+<el-descriptions-item label="User">
+  {{ license.username || "-" }}
+</el-descriptions-item>
+
+
+<el-descriptions-item label="Product">
+  {{ license.product || "-" }}
+</el-descriptions-item>
+
+
+<el-descriptions-item label="Order">
+  {{ license.order_no || "-" }}
+</el-descriptions-item>
+
+
+<el-descriptions-item label="Activation">
+  {{ license.activated_count }} / {{ license.activation_limit }}
+</el-descriptions-item>
+
+        <el-descriptions-item label="Expires">
+          {{ license.expires_at || "Unlimited" }}
+        </el-descriptions-item>
+
+
+        <el-descriptions-item label="Activated At">
+          {{ license.activated_at || "-" }}
+        </el-descriptions-item>
+
+
+        <el-descriptions-item label="Created At">
+          {{ license.created_at }}
+        </el-descriptions-item>
+
+
+      </el-descriptions>
+
+
+    </el-card>
+
+
+  </div>
+</template>
+
+
+
+<script setup>
+
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+
+import { getLicense } from "../api/license";
+
+
+const route = useRoute();
+
+
+const license = ref(null);
+
+
+
+async function loadLicense(){
+
+    try {
+
+        const res = await getLicense(
+            route.params.licenseKey
+        );
+
+
+        license.value = res.data.data;
+
+
+    } catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+
+
+onMounted(()=>{
+
+    loadLicense();
+
+});
+
+</script>

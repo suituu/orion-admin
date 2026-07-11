@@ -108,7 +108,24 @@
         label="Created At"
         width="180"
       />
+<el-table-column
+  label="Action"
+  width="120"
+>
 
+  <template #default="scope">
+
+    <el-button
+      type="primary"
+      size="small"
+      @click="viewLicense(scope.row.license_key)"
+    >
+      View
+    </el-button>
+
+  </template>
+
+</el-table-column>
 
     </el-table>
 
@@ -121,14 +138,20 @@
 <script setup>
 
 import { ref, onMounted } from "vue";
-
+import { useRouter } from "vue-router";
 import { getLicenses } from "../api/license";
 
 
 const licenses = ref([]);
+const router = useRouter();
 
+function viewLicense(key){
 
+    router.push(
+        `/licenses/${key}`
+    );
 
+}
 async function loadLicenses(){
 
     try {

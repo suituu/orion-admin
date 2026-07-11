@@ -21,3 +21,13 @@ export function getLicenses() {
     );
 
 }
+export function getLicense(licenseKey) {
+
+    return axios.get(
+        `${API_BASE}/api/licenses/${licenseKey}`,
+        {
+            headers: getAuthHeaders(),
+        }
+    );
+
+}
