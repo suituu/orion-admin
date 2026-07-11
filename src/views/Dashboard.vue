@@ -4,14 +4,13 @@
     <h1>ORION Dashboard</h1>
 
 
+    <!-- Statistics -->
     <el-row
       :gutter="20"
       style="margin-top:30px;"
     >
 
-      <el-col
-        :span="6"
-      >
+      <el-col :span="6">
         <el-card>
           <h3>Users</h3>
           <div class="number">
@@ -21,41 +20,34 @@
       </el-col>
 
 
-      <el-col
-        :span="6"
-      >
+      <el-col :span="6">
         <el-card>
-          <h3>Orders</h3>
+          <h3>Devices</h3>
           <div class="number">
-            {{ dashboard.orders }}
+            {{ dashboard.devices }}
           </div>
         </el-card>
       </el-col>
 
 
-      <el-col
-        :span="6"
-      >
+      <el-col :span="6">
         <el-card>
-          <h3>Products</h3>
+          <h3>Online Devices</h3>
           <div class="number">
-            {{ dashboard.products }}
+            {{ dashboard.onlineDevices }}
           </div>
         </el-card>
       </el-col>
 
 
-      <el-col
-        :span="6"
-      >
+      <el-col :span="6">
         <el-card>
-          <h3>Admins</h3>
+          <h3>Licenses</h3>
           <div class="number">
-            {{ dashboard.admins }}
+            {{ dashboard.licenses }}
           </div>
         </el-card>
       </el-col>
-
 
     </el-row>
 
@@ -66,46 +58,17 @@
       style="margin-top:20px;"
     >
 
-
-      <el-col
-        :span="6"
-      >
+      <el-col :span="6">
         <el-card>
-          <h3>Devices</h3>
+          <h3>Products</h3>
           <div class="number">
-            {{ dashboard.devices }}
+            {{ dashboard.products }}
           </div>
         </el-card>
       </el-col>
 
 
-      <el-col
-        :span="6"
-      >
-        <el-card>
-          <h3>Online Devices</h3>
-          <div class="number">
-            {{ dashboard.onlineDevices }}
-          </div>
-        </el-card>
-      </el-col>
-
-
-      <el-col
-        :span="6"
-      >
-        <el-card>
-          <h3>Licenses</h3>
-          <div class="number">
-            {{ dashboard.licenses }}
-          </div>
-        </el-card>
-      </el-col>
-
-
-      <el-col
-        :span="6"
-      >
+      <el-col :span="6">
         <el-card>
           <h3>Firmwares</h3>
           <div class="number">
@@ -115,7 +78,95 @@
       </el-col>
 
 
+      <el-col :span="6">
+        <el-card>
+          <h3>Latest Firmware</h3>
+
+          <div class="number small">
+            {{
+              dashboard.latestFirmware?.version || "-"
+            }}
+          </div>
+
+        </el-card>
+      </el-col>
+
+
+      <el-col :span="6">
+        <el-card>
+          <h3>OTA Downloads</h3>
+
+          <div class="number">
+            {{ dashboard.otaDownloads }}
+          </div>
+
+        </el-card>
+      </el-col>
+
     </el-row>
+
+
+
+    <!-- OTA Activity -->
+
+    <el-card
+      style="margin-top:30px;"
+    >
+
+      <template #header>
+        Recent OTA Activity
+      </template>
+
+
+      <el-table
+        :data="dashboard.recentOtaLogs"
+        border
+        style="width:100%;"
+      >
+
+        <el-table-column
+          prop="device_id"
+          label="Device"
+          min-width="200"
+        />
+
+
+        <el-table-column
+          prop="version"
+          label="Version"
+          width="120"
+        />
+
+
+        <el-table-column
+          prop="status"
+          label="Status"
+          width="140"
+        >
+
+          <template #default="scope">
+
+            <el-tag
+              type="success"
+            >
+              {{ scope.row.status }}
+            </el-tag>
+
+          </template>
+
+        </el-table-column>
+
+
+        <el-table-column
+          prop="created_at"
+          label="Time"
+          min-width="180"
+        />
+
+      </el-table>
+
+
+    </el-card>
 
 
   </div>
@@ -153,10 +204,15 @@ const dashboard = ref({
 
   licenses:0,
 
-  firmwares:0
+  firmwares:0,
+
+  otaDownloads:0,
+
+  latestFirmware:null,
+
+  recentOtaLogs:[]
 
 });
-
 
 
 
@@ -176,7 +232,6 @@ async function loadDashboard(){
   }
 
 }
-
 
 
 
@@ -209,5 +264,13 @@ onMounted(()=>{
   margin-top:15px;
 
 }
+
+
+.small{
+
+  font-size:26px;
+
+}
+
 
 </style>
