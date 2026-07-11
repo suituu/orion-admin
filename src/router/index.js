@@ -45,6 +45,11 @@ const routes = [
         name: "Orders",
         component: () => import("../views/Orders.vue"),
       },
+      {
+        path: "ota-logs",
+        name: "OtaLogs",
+        component: () => import("../views/OtaLogs.vue"),
+      },
     ],
   },
 ];
