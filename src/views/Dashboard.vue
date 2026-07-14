@@ -151,7 +151,22 @@
       </el-col>
 
     </el-row>
+       <!-- Revenue Trend -->
+    <el-card
+      class="activity-card"
+      style="margin-top:20px;"
+    >
 
+      <template #header>
+        Revenue Trend
+      </template>
+
+      <div
+        ref="revenueChart"
+        style="height:350px;width:100%;"
+      ></div>
+
+    </el-card>
     <!-- Recent Orders -->
     <el-card class="activity-card">
 
@@ -347,9 +362,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { getDashboard } from "../api/dashboard";
 
+import {
+  ref,
+  onMounted,
+  nextTick
+} from "vue";
+
+import * as echarts from "echarts";
+
+import {
+  getDashboard,
+  getRevenueTrend
+} from "../api/dashboard";
 const dashboard = ref({
   users: 0,
   orders: 0,
@@ -373,7 +398,9 @@ const dashboard = ref({
   recentPayments: [], 
   recentOtaLogs: [],
 });
+const revenueChart = ref(null);
 
+const revenueData = ref([]);
 function formatAmount(value) {
   const amount = Number(value);
 
@@ -396,9 +423,65 @@ async function loadDashboard() {
     console.error(err);
   }
 }
+async function loadRevenueChart() {
 
-onMounted(() => {
+  try {
+
+    const res = await getRevenueTrend();
+
+    revenueData.value = res.data.data;
+
+    await nextTick();
+
+    const chart =
+      echarts.init(revenueChart.value);
+
+
+    chart.setOption({
+
+      title: {
+        text: "Revenue Trend"
+      },
+
+      tooltip: {},
+
+      xAxis: {
+        type: "category",
+        data: revenueData.value.map(
+          item => item.date
+        )
+      },
+
+      yAxis: {
+        type: "value"
+      },
+
+      series: [
+        {
+          name: "Revenue",
+          type: "line",
+          data: revenueData.value.map(
+            item => item.amount
+          )
+        }
+      ]
+
+    });
+
+
+  } catch(err) {
+
+    console.error(err);
+
+  }
+
+}
+onMounted(()=>{
+
   loadDashboard();
+
+  loadRevenueChart();
+
 });
 </script>
 

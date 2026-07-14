@@ -25,3 +25,13 @@ export function getDashboard() {
     );
 
 }
+export function getRevenueTrend() {
+
+    return axios.get(
+        `${API_BASE}/api/admin/dashboard/revenue`,
+        {
+            headers: getAuthHeaders(),
+        }
+    );
+
+}
