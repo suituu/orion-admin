@@ -152,6 +152,151 @@
 
     </el-row>
 
+    <!-- Recent Orders -->
+    <el-card class="activity-card">
+
+      <template #header>
+        Recent Orders
+      </template>
+
+      <el-table
+        :data="dashboard.recentOrders"
+        border
+        style="width:100%;"
+      >
+
+        <el-table-column
+          prop="order_no"
+          label="Order No."
+          min-width="200"
+        />
+
+        <el-table-column
+          prop="username"
+          label="User"
+          min-width="140"
+        >
+          <template #default="scope">
+            {{ scope.row.username || "-" }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="product"
+          label="Product"
+          min-width="140"
+        />
+
+        <el-table-column
+          label="Amount"
+          width="120"
+        >
+          <template #default="scope">
+            ¥{{ formatAmount(scope.row.amount) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          label="Status"
+          width="120"
+        >
+          <template #default="scope">
+            <el-tag
+              :type="scope.row.status === 'paid' ? 'success' : 'warning'"
+            >
+              {{ scope.row.status }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="created_at"
+          label="Created At"
+          min-width="180"
+        />
+
+      </el-table>
+
+    </el-card>
+
+    <!-- Recent Payments -->
+    <el-card class="activity-card">
+
+      <template #header>
+        Recent Payments
+      </template>
+
+      <el-table
+        :data="dashboard.recentPayments"
+        border
+        style="width:100%;"
+      >
+
+        <el-table-column
+          prop="payment_no"
+          label="Payment No."
+          min-width="220"
+        />
+
+        <el-table-column
+          prop="order_no"
+          label="Order No."
+          min-width="180"
+        />
+
+        <el-table-column
+          prop="username"
+          label="User"
+          min-width="140"
+        >
+          <template #default="scope">
+            {{ scope.row.username || "-" }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="product"
+          label="Product"
+          min-width="140"
+        />
+
+        <el-table-column
+          label="Amount"
+          width="120"
+        >
+          <template #default="scope">
+            ¥{{ formatAmount(scope.row.amount) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="provider"
+          label="Provider"
+          width="110"
+        />
+
+        <el-table-column
+          label="Status"
+          width="120"
+        >
+          <template #default="scope">
+            <el-tag
+              :type="scope.row.status === 'paid' ? 'success' : 'warning'"
+            >
+              {{ scope.row.status }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="created_at"
+          label="Created At"
+          min-width="180"
+        />
+
+      </el-table>
+
+    </el-card>
     <!-- OTA Activity -->
     <el-card class="activity-card">
 
@@ -225,6 +370,7 @@ const dashboard = ref({
   otaDownloads: 0,
 
   latestFirmware: null,
+  recentPayments: [], 
   recentOtaLogs: [],
 });
 
