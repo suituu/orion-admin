@@ -31,6 +31,18 @@ export function getOrders(){
     );
 
 }
+
+export function getOrder(id) {
+
+    return axios.get(
+        `${API_BASE}/api/admin/orders/${id}`,
+        {
+            headers: getAuthHeaders(),
+        }
+    );
+
+}
+
 export function payOrder(id){
 
     return axios.put(

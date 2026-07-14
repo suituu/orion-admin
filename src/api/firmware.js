@@ -16,6 +16,15 @@ export function getFirmwares() {
     });
 }
 
+export function getFirmware(id) {
+    return axios.get(
+        `${API_BASE}/api/admin/firmwares/${id}`,
+        {
+            headers: getAuthHeaders(),
+        }
+    );
+}
+
 export function deleteFirmware(id) {
     return axios.delete(`${API_BASE}/api/admin/firmwares/${id}`, {
         headers: getAuthHeaders(),

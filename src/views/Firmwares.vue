@@ -127,6 +127,13 @@
         fixed="right"
       >
         <template #default="scope">
+<el-button
+  type="primary"
+  size="small"
+  @click="viewFirmware(scope.row.id)"
+>
+  View
+</el-button>
           <el-button
             type="danger"
             size="small"
@@ -249,18 +256,12 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  onMounted,
-} from "vue";
-
-import {
-  getFirmwares,
-  deleteFirmware,
-  uploadFirmware,
-} from "../api/firmware";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { getFirmwares, deleteFirmware, uploadFirmware,} from "../api/firmware";
 
 const firmwares = ref([]);
+const router = useRouter();
 const uploadDialogVisible = ref(false);
 const uploading = ref(false);
 const fileInput = ref(null);
@@ -281,7 +282,13 @@ function createDefaultUploadForm() {
 const uploadForm = ref(
   createDefaultUploadForm()
 );
+function viewFirmware(id){
 
+    router.push(
+        `/firmwares/${id}`
+    );
+
+}
 async function loadFirmwares() {
   try {
     const res = await getFirmwares();

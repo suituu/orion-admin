@@ -95,19 +95,26 @@
         width="140"
       >
 
-        <template #default="scope">
+<template #default="scope">
 
-          <el-button
-            v-if="scope.row.status === 'created'"
-            type="primary"
-            size="small"
-            @click="handlePay(scope.row.id)"
-          >
-            Mark Paid
-          </el-button>
+  <el-button
+    type="primary"
+    size="small"
+    @click="viewOrder(scope.row.id)"
+  >
+    View
+  </el-button>
 
+  <el-button
+    v-if="scope.row.status === 'created'"
+    type="success"
+    size="small"
+    @click="handlePay(scope.row.id)"
+  >
+    Mark Paid
+  </el-button>
 
-        </template>
+</template>
 
       </el-table-column>
 
@@ -123,7 +130,7 @@
 <script setup>
 
 import { ref, onMounted } from "vue";
-
+import { useRouter } from "vue-router";
 
 import {
   getOrders,
@@ -133,8 +140,15 @@ import {
 
 
 const orders = ref([]);
+const router = useRouter();
 
+function viewOrder(id) {
 
+  router.push(
+    `/orders/${id}`
+  );
+
+}
 
 async function loadOrders(){
 

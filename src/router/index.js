@@ -26,6 +26,11 @@ const routes = [
         component: () => import("../views/Firmwares.vue"),
       },
       {
+       path: "firmwares/:id",
+       name: "FirmwareDetail",
+       component: () => import("../views/FirmwareDetail.vue"),
+      },
+      {
         path: "devices",
         name: "Devices",
         component: () => import("../views/Devices.vue"),
@@ -49,6 +54,26 @@ const routes = [
         path: "orders",
         name: "Orders",
         component: () => import("../views/Orders.vue"),
+      },
+      {
+        path: "payments",
+        name: "Payments",
+        component: () => import("../views/Payments.vue"),
+      },
+      {
+        path: "payments/:id",
+        name: "PaymentDetail",
+        component: () => import("../views/PaymentDetail.vue"),
+      },
+      {
+        path: "payments",
+        name: "Payments",
+        component: () => import("../views/Payments.vue"),
+      },
+      {
+        path: "orders/:id",
+        name: "OrderDetail",
+        component: () => import("../views/OrderDetail.vue"),
       },
       {
         path: "ota-logs",

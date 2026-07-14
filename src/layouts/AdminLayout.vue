@@ -36,6 +36,10 @@
           Orders
         </el-menu-item>
 
+<el-menu-item index="/payments">
+  Payments
+</el-menu-item>
+
 <el-menu-item index="/ota-logs">
   OTA Logs
 </el-menu-item>
