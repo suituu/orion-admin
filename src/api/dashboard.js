@@ -35,3 +35,13 @@ export function getRevenueTrend() {
     );
 
 }
+export function getOrderTrend() {
+
+    return axios.get(
+        `${API_BASE}/api/admin/dashboard/orders`,
+        {
+            headers: getAuthHeaders(),
+        }
+    );
+
+}
