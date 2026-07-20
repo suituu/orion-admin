@@ -29,15 +29,25 @@
     width="120"
 />
 
-        <el-table-column
-            prop="from_version"
-            label="From"
-        />
+<el-table-column
+    label="From"
+    min-width="150"
+>
+    <template #default="scope">
 
+        {{
+            scope.row.from_version === "license-download"
+            ? "License Download"
+            : scope.row.from_version
+        }}
+
+    </template>
+</el-table-column>
 
         <el-table-column
             prop="to_version"
             label="To"
+            width="100"
         />
 
 
