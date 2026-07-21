@@ -1,148 +1,482 @@
 <template>
-  <div class="page">
 
-    <h2>Order Detail</h2>
+<div class="page">
 
-    <el-card v-if="order">
 
-      <el-descriptions
-        title="Order Information"
-        border
-        :column="2"
-      >
+<el-card>
 
-        <el-descriptions-item label="ID">
-          {{ order.id }}
-        </el-descriptions-item>
 
-        <el-descriptions-item label="Order No">
-          {{ order.order_no }}
-        </el-descriptions-item>
+<div class="page-header">
 
-        <el-descriptions-item label="User">
-          {{ order.username || "-" }}
-        </el-descriptions-item>
+<h2>
+订单详情
+</h2>
 
-        <el-descriptions-item label="Email">
-          {{ order.email || "-" }}
-        </el-descriptions-item>
 
-        <el-descriptions-item label="Product">
-          {{ order.product || "-" }}
-        </el-descriptions-item>
+<span>
+查看订单及授权信息
+</span>
 
-        <el-descriptions-item label="Amount">
-          ¥{{ order.amount }}
-        </el-descriptions-item>
 
-        <el-descriptions-item label="Status">
-          <el-tag
-            v-if="order.status === 'paid'"
-            type="success"
-          >
-            Paid
-          </el-tag>
+</div>
 
-          <el-tag
-            v-else
-            type="warning"
-          >
-            {{ order.status }}
-          </el-tag>
-        </el-descriptions-item>
 
-        <el-descriptions-item label="Created At">
-          {{ order.created_at }}
-        </el-descriptions-item>
+</el-card>
 
-      </el-descriptions>
 
-    </el-card>
 
-    <el-card
-      v-if="order"
-      style="margin-top:20px;"
-    >
 
-      <template #header>
-        License Information
-      </template>
 
-      <el-descriptions
-        border
-        :column="2"
-      >
+<el-card
+class="section-card"
+v-if="order"
+>
 
-        <el-descriptions-item label="License Key">
-          {{ order.license_key || "None" }}
-        </el-descriptions-item>
 
-        <el-descriptions-item label="License Status">
-          <el-tag
-            v-if="order.license_status === 'active'"
-            type="success"
-          >
-            Active
-          </el-tag>
+<template #header>
 
-          <el-tag
-            v-else-if="order.license_status === 'revoked'"
-            type="danger"
-          >
-            Revoked
-          </el-tag>
+订单信息
 
-          <el-tag
-            v-else
-            type="info"
-          >
-            {{ order.license_status || "None" }}
-          </el-tag>
-        </el-descriptions-item>
-
-        <el-descriptions-item label="Device">
-          {{ order.device_id || "Not Bound" }}
-        </el-descriptions-item>
-
-        <el-descriptions-item label="Activated At">
-          {{ order.activated_at || "-" }}
-        </el-descriptions-item>
-
-        <el-descriptions-item label="Expires At">
-          {{ order.expires_at || "Unlimited" }}
-        </el-descriptions-item>
-
-      </el-descriptions>
-
-    </el-card>
-
-  </div>
 </template>
 
+
+
+<el-descriptions
+
+border
+
+:column="2"
+
+>
+
+
+<el-descriptions-item label="订单ID">
+
+{{order.id}}
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="订单编号">
+
+{{order.order_no}}
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="用户账号">
+
+{{order.username || "-"}}
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="邮箱">
+
+{{order.email || "-"}}
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="产品名称">
+
+{{order.product || "-"}}
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="订单金额">
+
+¥{{order.amount}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="订单状态">
+
+
+<el-tag
+
+v-if="order.status==='paid'"
+
+type="success"
+
+>
+
+已支付
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else
+
+type="warning"
+
+>
+
+{{getOrderStatus(order.status)}}
+
+</el-tag>
+
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="创建时间">
+
+{{order.created_at}}
+
+</el-descriptions-item>
+
+
+</el-descriptions>
+
+
+</el-card>
+
+
+
+
+
+
+<el-card
+
+class="section-card"
+
+v-if="order"
+
+>
+
+
+<template #header>
+
+授权信息
+
+</template>
+
+
+
+<el-descriptions
+
+border
+
+:column="2"
+
+>
+
+
+
+<el-descriptions-item label="授权码">
+
+{{order.license_key || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="授权状态">
+
+
+<el-tag
+
+v-if="order.license_status==='active'"
+
+type="success"
+
+>
+
+已激活
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else-if="order.license_status==='revoked'"
+
+type="danger"
+
+>
+
+已撤销
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else
+
+>
+
+{{getLicenseStatus(order.license_status)}}
+
+</el-tag>
+
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="绑定设备">
+
+{{order.device_id || "未绑定"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="激活时间">
+
+{{order.activated_at || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="过期时间">
+
+{{order.expires_at || "无限期"}}
+
+</el-descriptions-item>
+
+
+
+</el-descriptions>
+
+
+</el-card>
+
+
+
+</div>
+
+</template>
+
+
+
+
+
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { getOrder } from "../api/order";
+
+
+import {
+
+ref,
+
+onMounted
+
+} from "vue";
+
+
+import {
+
+useRoute
+
+} from "vue-router";
+
+
+import {
+
+getOrder
+
+} from "../api/order";
+
+
+
 
 const route = useRoute();
+
+
 const order = ref(null);
 
-async function loadOrder() {
-  try {
-    const res = await getOrder(route.params.id);
-    order.value = res.data.data;
-  } catch (err) {
-    console.error(err);
-  }
+
+
+
+
+function getOrderStatus(status){
+
+
+const map={
+
+
+created:"待支付",
+
+pending:"处理中",
+
+cancelled:"已取消"
+
+
+};
+
+
+return map[status] || status;
+
+
 }
 
-onMounted(() => {
-  loadOrder();
+
+
+
+function getLicenseStatus(status){
+
+
+const map={
+
+
+unused:"未激活",
+
+active:"已激活",
+
+revoked:"已撤销"
+
+
+};
+
+
+return map[status] || status || "-";
+
+
+}
+
+
+
+
+async function loadOrder(){
+
+
+try{
+
+
+const res = await getOrder(
+
+route.params.id
+
+);
+
+
+order.value=res.data.data;
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+}
+
+
+}
+
+
+
+
+onMounted(()=>{
+
+
+loadOrder();
+
+
 });
+
+
 </script>
 
+
+
+
+
 <style scoped>
-.page {
-  padding: 20px;
+
+
+.page{
+
+
+padding:20px;
+
+
 }
+
+
+
+.page-header{
+
+
+display:flex;
+
+
+justify-content:space-between;
+
+
+align-items:center;
+
+
+}
+
+
+
+.page-header h2{
+
+
+margin:0;
+
+
+font-size:22px;
+
+
+}
+
+
+
+.page-header span{
+
+
+color:#909399;
+
+
+font-size:14px;
+
+
+}
+
+
+
+.section-card{
+
+
+margin-top:20px;
+
+
+}
+
+
+
+:deep(.el-card__header){
+
+
+font-weight:600;
+
+
+}
+
+
+
 </style>

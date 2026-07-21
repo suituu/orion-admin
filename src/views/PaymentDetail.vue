@@ -1,154 +1,317 @@
 <template>
-  <div>
 
-    <div class="page-header">
-      <h2>Payment Detail</h2>
-    </div>
+<div class="page">
 
 
-    <el-card
-      style="margin-top:20px;"
-    >
+<div class="page-header">
 
-      <h3>Payment Information</h3>
-
-
-      <el-descriptions
-        :column="2"
-        border
-      >
-
-        <el-descriptions-item label="Payment No">
-          {{ payment.payment_no }}
-        </el-descriptions-item>
+<h2>
+交易详情
+</h2>
 
 
-        <el-descriptions-item label="Order No">
-          {{ payment.order_no }}
-        </el-descriptions-item>
+<span>
+查看支付和交易信息
+</span>
 
 
-        <el-descriptions-item label="User">
-          {{ payment.username || "-" }}
-        </el-descriptions-item>
+</div>
 
 
-        <el-descriptions-item label="Email">
-          {{ payment.email || "-" }}
-        </el-descriptions-item>
 
 
-        <el-descriptions-item label="Product">
-          {{ payment.product }}
-        </el-descriptions-item>
+<el-card
+class="section-card"
+>
 
 
-        <el-descriptions-item label="Provider">
-          {{ payment.provider }}
-        </el-descriptions-item>
+<template #header>
 
+支付信息
 
-        <el-descriptions-item label="Amount">
-          ¥{{ payment.amount }}
-        </el-descriptions-item>
-
-
-        <el-descriptions-item label="Currency">
-          {{ payment.currency }}
-        </el-descriptions-item>
-
-
-        <el-descriptions-item label="Status">
-
-          <el-tag
-            v-if="payment.status === 'paid'"
-            type="success"
-          >
-            Paid
-          </el-tag>
-
-
-          <el-tag
-            v-else
-            type="warning"
-          >
-            {{ payment.status }}
-          </el-tag>
-
-        </el-descriptions-item>
-
-
-        <el-descriptions-item label="Transaction ID">
-          {{ payment.transaction_id || "-" }}
-        </el-descriptions-item>
-
-
-        <el-descriptions-item label="Paid At">
-          {{ payment.paid_at || "-" }}
-        </el-descriptions-item>
-
-
-        <el-descriptions-item label="Created At">
-          {{ payment.created_at }}
-        </el-descriptions-item>
-
-
-        <el-descriptions-item label="Failure Reason">
-          {{ payment.failure_reason || "-" }}
-        </el-descriptions-item>
-
-
-      </el-descriptions>
-
-
-    </el-card>
-
-
-  </div>
 </template>
 
 
+
+<el-descriptions
+
+:column="2"
+
+border
+
+>
+
+
+<el-descriptions-item label="交易编号">
+
+{{payment.payment_no}}
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="订单编号">
+
+{{payment.order_no}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="用户账号">
+
+{{payment.username || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="邮箱">
+
+{{payment.email || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="产品名称">
+
+{{payment.product || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="支付渠道">
+
+{{getProviderName(payment.provider)}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="交易金额">
+
+¥{{payment.amount}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="货币">
+
+{{payment.currency}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="支付状态">
+
+
+<el-tag
+
+v-if="payment.status==='paid'"
+
+type="success"
+
+>
+
+已支付
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else-if="payment.status==='pending'"
+
+type="warning"
+
+>
+
+处理中
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else-if="payment.status==='failed'"
+
+type="danger"
+
+>
+
+支付失败
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else
+
+>
+
+{{payment.status}}
+
+</el-tag>
+
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="交易流水">
+
+{{payment.transaction_id || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="支付时间">
+
+{{payment.paid_at || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="创建时间">
+
+{{payment.created_at}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="失败原因">
+
+{{payment.failure_reason || "-"}}
+
+</el-descriptions-item>
+
+
+
+</el-descriptions>
+
+
+
+</el-card>
+
+
+
+</div>
+
+
+</template>
 <script setup>
 
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import {
+ref,
+onMounted
+} from "vue";
+
 
 import {
-  getPayment
+useRoute
+} from "vue-router";
+
+
+import {
+getPayment
 } from "../api/payment";
 
 
+
 const route = useRoute();
+
 
 
 const payment = ref({});
 
 
 
-async function loadPayment(){
 
-  try{
-
-    const res = await getPayment(
-      route.params.id
-    );
-
-    payment.value = res.data.data;
+function getProviderName(provider){
 
 
-  }catch(err){
+const map={
 
-    console.error(err);
 
-  }
+mock:"模拟支付",
+
+wechat:"微信支付",
+
+alipay:"支付宝"
+
+
+};
+
+
+
+return map[provider] || provider || "-";
+
 
 }
 
 
 
+
+
+async function loadPayment(){
+
+
+try{
+
+
+const res = await getPayment(
+
+route.params.id
+
+);
+
+
+
+payment.value = res.data.data;
+
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+}
+
+
+}
+
+
+
+
 onMounted(()=>{
 
-  loadPayment();
+
+loadPayment();
+
 
 });
 
@@ -156,14 +319,67 @@ onMounted(()=>{
 </script>
 
 
+
 <style scoped>
+
+
+.page{
+
+
+padding:20px;
+
+
+}
+
+
 
 .page-header{
 
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+
+display:flex;
+
+
+justify-content:space-between;
+
+
+align-items:center;
+
 
 }
+
+
+
+.page-header h2{
+
+
+margin:0;
+
+
+}
+
+
+
+.page-header span{
+
+
+color:#909399;
+
+
+font-size:14px;
+
+
+}
+
+
+
+.section-card{
+
+
+margin-top:20px;
+
+
+}
+
+
 
 </style>

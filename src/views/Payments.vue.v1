@@ -5,11 +5,9 @@
 <div class="page-header">
 
 <h2>
-交易记录
+Payment Management
 </h2>
-<span>
-查看用户支付和交易流水
-</span>
+
 </div>
 
 
@@ -25,7 +23,7 @@ style="margin:20px 0;"
 
 <el-input
 v-model="filters.keyword"
-placeholder="交易编号 / 订单 / 用户"
+placeholder="Payment / Order / User"
 clearable
 />
 
@@ -38,26 +36,26 @@ clearable
 
 <el-select
 v-model="filters.status"
-placeholder="支付状态"
+placeholder="Status"
 clearable
 style="width:100%;"
 >
 
 
 <el-option
-label="已支付"
+label="Paid"
 value="paid"
 />
 
 
 <el-option
-label="处理中"
+label="Pending"
 value="pending"
 />
 
 
 <el-option
-label="支付失败"
+label="Failed"
 value="failed"
 />
 
@@ -75,26 +73,26 @@ value="failed"
 
 <el-select
 v-model="filters.provider"
-placeholder="支付渠道"
+placeholder="Provider"
 clearable
 style="width:100%;"
 >
 
 
 <el-option
-label="模拟支付"
+label="Mock"
 value="mock"
 />
 
 
 <el-option
-label="微信支付"
+label="WeChat"
 value="wechat"
 />
 
 
 <el-option
-label="支付宝"
+label="Alipay"
 value="alipay"
 />
 
@@ -140,7 +138,7 @@ style="width:100%;margin-top:20px;"
 
 <el-table-column
 prop="id"
-label="编号"
+label="ID"
 width="70"
 />
 
@@ -149,7 +147,7 @@ width="70"
 
 <el-table-column
 prop="payment_no"
-label="交易编号"
+label="Payment No"
 width="230"
 />
 
@@ -158,7 +156,7 @@ width="230"
 
 <el-table-column
 prop="order_no"
-label="订单编号"
+label="Order No"
 width="200"
 />
 
@@ -167,7 +165,7 @@ width="200"
 
 <el-table-column
 prop="username"
-label="用户账号"
+label="User"
 width="150"
 />
 
@@ -176,7 +174,7 @@ width="150"
 
 <el-table-column
 prop="product"
-label="产品名称"
+label="Product"
 width="150"
 />
 
@@ -184,21 +182,16 @@ width="150"
 
 
 <el-table-column
-label="支付渠道"
->
+prop="provider"
+label="Provider"
+width="120"
+/>
 
-<template #default="scope">
-
-{{ getProviderName(scope.row.provider) }}
-
-</template>
-
-</el-table-column>
 
 
 
 <el-table-column
-label="交易金额"
+label="Amount"
 width="110"
 >
 
@@ -216,7 +209,7 @@ width="110"
 
 <el-table-column
 prop="currency"
-label="货币"
+label="Currency"
 width="100"
 />
 
@@ -270,9 +263,10 @@ v-else
 type="info"
 >
 
-{{ getPaymentStatus(scope.row.status) }}
+{{ scope.row.status }}
 
 </el-tag>
+
 
 </template>
 
@@ -282,7 +276,7 @@ type="info"
 
 <el-table-column
 prop="transaction_id"
-label="交易流水"
+label="Transaction ID"
 width="230"
 />
 
@@ -290,7 +284,7 @@ width="230"
 
 <el-table-column
 prop="paid_at"
-label="支付时间"
+label="Paid At"
 width="180"
 />
 
@@ -298,7 +292,7 @@ width="180"
 
 <el-table-column
 prop="created_at"
-label="创建时间"
+label="Created At"
 width="180"
 />
 
@@ -306,7 +300,7 @@ width="180"
 
 
 <el-table-column
-label="操作"
+label="Action"
 width="120"
 >
 
@@ -408,50 +402,7 @@ total:0,
 
 const router = useRouter();
 
-function getProviderName(provider){
 
-
-    const map = {
-
-
-        mock:"模拟支付",
-
-        wechat:"微信支付",
-
-        alipay:"支付宝"
-
-
-    };
-
-
-    return map[provider] || provider;
-
-
-}
-
-
-
-
-function getPaymentStatus(status){
-
-
-    const map = {
-
-
-        paid:"已支付",
-
-        pending:"处理中",
-
-        failed:"支付失败"
-
-
-    };
-
-
-    return map[status] || status;
-
-
-}
 
 
 async function loadPayments(){
@@ -568,50 +519,13 @@ loadPayments();
 
 display:flex;
 
-
 justify-content:space-between;
-
 
 align-items:center;
 
 
 }
 
-
-
-.page-header h2{
-
-
-margin:0;
-
-
-font-size:22px;
-
-
-}
-
-
-
-.page-header span{
-
-
-color:#909399;
-
-
-font-size:14px;
-
-
-}
-
-
-
-:deep(.el-table){
-
-
-margin-top:20px;
-
-
-}
 
 
 </style>

@@ -8,3 +8,34 @@ export function adminLogin(username, password) {
         password,
     });
 }
+
+
+export function getAdmins(){
+
+    return axios.get(
+        `${API_BASE}/api/admin/admins`,
+        {
+            headers:{
+                Authorization:
+                `Bearer ${localStorage.getItem("token")}`,
+            },
+        }
+    );
+
+}
+
+
+
+export function getAdmin(id){
+
+    return axios.get(
+        `${API_BASE}/api/admin/admins/${id}`,
+        {
+            headers:{
+                Authorization:
+                `Bearer ${localStorage.getItem("token")}`,
+            },
+        }
+    );
+
+}

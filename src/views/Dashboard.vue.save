@@ -1,0 +1,462 @@
+<template>
+
+<div class="dashboard">
+
+
+<!-- 核心数据 -->
+
+
+<el-row
+:gutter="20"
+class="stats-row"
+>
+
+
+<el-col :span="6">
+
+<el-card class="stat-card">
+
+<div class="card-title">
+{{ $t("dashboard.users") }}
+</div>
+
+
+<div class="card-number">
+{{ data.users }}
+</div>
+
+
+</el-card>
+
+</el-col>
+
+
+
+<el-col :span="6">
+
+<el-card class="stat-card">
+
+<div class="card-title">
+{{ $t("dashboard.orders") }}
+</div>
+
+
+<div class="card-number">
+{{ data.orders }}
+</div>
+
+
+</el-card>
+
+</el-col>
+
+
+
+
+<el-col :span="6">
+
+<el-card class="stat-card">
+
+<div class="card-title">
+{{ $t("dashboard.revenue") }}
+</div>
+
+
+<div class="card-number">
+
+¥{{ data.totalRevenue }}
+
+</div>
+
+
+</el-card>
+
+</el-col>
+
+
+
+
+<el-col :span="6">
+
+<el-card class="stat-card">
+
+<div class="card-title">
+{{ $t("dashboard.onlineDevices") }}
+</div>
+
+
+<div
+class="card-number"
+:class="data.onlineDevices>0?'online':'offline'"
+>
+
+{{ data.onlineDevices }}
+
+</div>
+
+
+</el-card>
+
+</el-col>
+
+
+
+</el-row>
+
+
+
+
+
+<!-- 第二层数据 -->
+
+
+<el-row
+
+:gutter="20"
+
+class="stats-row"
+
+>
+
+
+<el-col :span="6">
+
+<el-card class="stat-card">
+
+<div class="card-title">
+
+{{ $t("dashboard.devices") }}
+
+</div>
+
+
+<div class="card-number">
+
+{{ data.devices }}
+
+</div>
+
+
+</el-card>
+
+</el-col>
+
+
+
+
+<el-col :span="6">
+
+<el-card class="stat-card">
+
+
+<div class="card-title">
+
+{{ $t("dashboard.licenses") }}
+
+</div>
+
+
+<div class="card-number">
+
+{{ data.licenses }}
+
+</div>
+
+
+</el-card>
+
+</el-col>
+
+
+
+
+<el-col :span="6">
+
+<el-card class="stat-card">
+
+
+<div class="card-title">
+
+{{ $t("dashboard.firmware") }}
+
+</div>
+
+
+<div class="card-number">
+
+{{ data.firmwares }}
+
+</div>
+
+
+</el-card>
+
+
+</el-col>
+
+
+
+
+<el-col :span="6">
+
+<el-card class="stat-card">
+
+
+<div class="card-title">
+
+{{ $t("dashboard.otaDownloads") }}
+
+</div>
+
+
+<div class="card-number">
+
+{{ data.otaDownloads }}
+
+</div>
+
+
+</el-card>
+
+</el-col>
+
+
+
+</el-row>
+<!-- 趋势图表 -->
+
+
+<el-row
+
+:gutter="20"
+
+class="chart-row"
+
+>
+
+
+<el-col :span="12">
+
+
+<el-card class="chart-card">
+
+
+<template #header>
+
+{{ $t("dashboard.revenueTrend") }}
+
+</template>
+
+
+
+<div
+
+ref="revenueChart"
+
+class="chart"
+
+></div>
+
+
+
+</el-card>
+
+
+</el-col>
+
+
+
+
+
+<el-col :span="12">
+
+
+<el-card class="chart-card">
+
+
+<template #header>
+
+{{ $t("dashboard.orderTrend") }}
+
+</template>
+
+
+
+<div
+
+ref="orderChart"
+
+class="chart"
+
+></div>
+
+
+
+</el-card>
+
+
+</el-col>
+
+
+
+</el-row>
+
+
+
+
+
+<!-- 系统信息 -->
+
+
+<el-row
+
+:gutter="20"
+
+class="info-row"
+
+>
+
+
+
+<el-col :span="12">
+
+
+<el-card class="info-card">
+
+
+<template #header>
+
+{{ $t("dashboard.latestFirmware") }}
+
+</template>
+
+
+
+<div class="firmware-box">
+
+
+<div>
+
+版本
+
+</div>
+
+
+
+<strong>
+
+{{ data.latestFirmware?.version || "-" }}
+
+</strong>
+
+
+
+</div>
+
+
+
+</el-card>
+
+
+</el-col>
+
+
+
+
+
+<el-col :span="12">
+
+
+<el-card class="info-card">
+
+
+<template #header>
+
+{{ $t("dashboard.systemStatus") }}
+
+</template>
+
+
+
+
+<div class="status-item">
+
+
+<span>
+
+{{ $t("dashboard.backend") }}
+
+</span>
+
+
+
+<el-tag type="success">
+
+{{ $t("status.running") }}
+
+</el-tag>
+
+
+
+</div>
+
+
+
+
+
+<div class="status-item">
+
+
+<span>
+
+{{ $t("dashboard.database") }}
+
+</span>
+
+
+
+<el-tag type="success">
+
+{{ $t("status.connected") }}
+
+</el-tag>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="status-item">
+
+
+<span>
+
+{{ $t("dashboard.otaService") }}
+
+</span>
+
+
+
+<el-tag type="success">
+
+{{ $t("status.active") }}
+
+</el-tag>
+
+
+
+</div>
+
+
+
+</el-card>
+
+
+</el-col>
+
+
+</el-row>

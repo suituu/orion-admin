@@ -80,6 +80,26 @@ const routes = [
         name: "OtaLogs",
         component: () => import("../views/OtaLogs.vue"),
       },
+      {
+       path: "users",
+       name: "Users",
+       component: () => import("../views/Users.vue"),
+      },
+      {
+       path: "users/:id",
+       name: "UserDetail",
+       component: () => import("../views/UserDetail.vue"),
+      },
+      {
+       path: "admins",
+       name: "Admins",
+       component: () => import("../views/Admins.vue"),
+      },
+      {
+       path: "admins/:id",
+       name: "AdminDetail",
+       component: () => import("../views/AdminDetail.vue"),
+       },
     ],
   },
 ];

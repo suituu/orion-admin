@@ -1,0 +1,223 @@
+<template>
+
+<div>
+
+
+<div class="page-header">
+
+<h2>
+User Management
+</h2>
+
+</div>
+
+
+
+<el-table
+:data="users"
+border
+style="width:100%;margin-top:20px;"
+>
+
+
+
+<el-table-column
+prop="id"
+label="ID"
+width="70"
+/>
+
+
+
+<el-table-column
+prop="username"
+label="Username"
+width="200"
+/>
+
+
+
+<el-table-column
+prop="email"
+label="Email"
+width="220"
+/>
+
+
+
+<el-table-column
+prop="orders"
+label="Orders"
+width="100"
+/>
+
+
+
+<el-table-column
+prop="payments"
+label="Payments"
+width="100"
+/>
+
+
+
+<el-table-column
+prop="licenses"
+label="Licenses"
+width="100"
+/>
+
+
+
+<el-table-column
+prop="devices"
+label="Devices"
+width="100"
+/>
+
+
+
+<el-table-column
+prop="created_at"
+label="Created At"
+width="180"
+/>
+
+
+
+<el-table-column
+label="Action"
+width="120"
+>
+
+
+<template #default="scope">
+
+
+<el-button
+type="primary"
+size="small"
+@click="viewUser(scope.row.id)"
+>
+
+View
+
+</el-button>
+
+
+</template>
+
+
+</el-table-column>
+
+
+
+</el-table>
+
+
+</div>
+
+
+</template>
+<script setup>
+
+
+import {
+    ref,
+    onMounted
+} from "vue";
+
+
+import {
+    useRouter
+} from "vue-router";
+
+
+import {
+    getUsers
+} from "../api/user";
+
+
+
+const users = ref([]);
+
+
+const router = useRouter();
+
+
+
+
+async function loadUsers(){
+
+
+    try{
+
+
+        const res = await getUsers();
+
+
+        users.value =
+            res.data.data;
+
+
+    }catch(err){
+
+
+        console.error(err);
+
+
+    }
+
+
+}
+
+
+
+
+
+function viewUser(id){
+
+
+    router.push(
+        `/users/${id}`
+    );
+
+
+}
+
+
+
+
+
+onMounted(()=>{
+
+
+    loadUsers();
+
+
+});
+
+
+
+</script>
+
+
+
+
+<style scoped>
+
+
+.page-header{
+
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+
+}
+
+
+</style>

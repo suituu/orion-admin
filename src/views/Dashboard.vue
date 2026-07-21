@@ -1,438 +1,896 @@
 <template>
-  <div class="page">
 
-    <h1>ORION Dashboard</h1>
+<div class="dashboard">
 
 
-    <!-- Business Statistics -->
-    <el-row :gutter="20" class="statistics-row">
+<!-- 核心数据 -->
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Users</h3>
-          <div class="number">
-            {{ dashboard.users }}
-          </div>
-        </el-card>
-      </el-col>
 
-
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Orders</h3>
-          <div class="number">
-            {{ dashboard.orders }}
-          </div>
-        </el-card>
-      </el-col>
-
-
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Products</h3>
-          <div class="number">
-            {{ dashboard.products }}
-          </div>
-        </el-card>
-      </el-col>
-
-
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Licenses</h3>
-          <div class="number">
-            {{ dashboard.licenses }}
-          </div>
-        </el-card>
-      </el-col>
+<el-row
+:gutter="20"
+class="stats-row"
+>
 
-    </el-row>
 
+<el-col :span="6">
 
+<el-card class="stat-card">
 
-    <!-- Device Statistics -->
-    <el-row :gutter="20" class="statistics-row">
+<div class="card-title">
+{{ $t("dashboard.users") }}
+</div>
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Devices</h3>
-          <div class="number">
-            {{ dashboard.devices }}
-          </div>
-        </el-card>
-      </el-col>
 
+<div class="card-number">
+{{ data.users }}
+</div>
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Online Devices</h3>
-          <div class="number">
-            {{ dashboard.onlineDevices }}
-          </div>
-        </el-card>
-      </el-col>
 
+</el-card>
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Firmwares</h3>
-          <div class="number">
-            {{ dashboard.firmwares }}
-          </div>
-        </el-card>
-      </el-col>
+</el-col>
 
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Latest Firmware</h3>
-          <div class="number small">
-            {{ dashboard.latestFirmware?.version || "-" }}
-          </div>
-        </el-card>
-      </el-col>
 
-    </el-row>
+<el-col :span="6">
 
+<el-card class="stat-card">
 
+<div class="card-title">
+{{ $t("dashboard.orders") }}
+</div>
 
 
-    <!-- Payment Statistics -->
-    <el-row :gutter="20" class="statistics-row">
+<div class="card-number">
+{{ data.orders }}
+</div>
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Payments</h3>
-          <div class="number">
-            {{ dashboard.payments }}
-          </div>
-        </el-card>
-      </el-col>
 
+</el-card>
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Paid Payments</h3>
-          <div class="number">
-            {{ dashboard.paidPayments }}
-          </div>
-        </el-card>
-      </el-col>
+</el-col>
 
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Pending Payments</h3>
-          <div class="number">
-            {{ dashboard.pendingPayments }}
-          </div>
-        </el-card>
-      </el-col>
 
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>Total Revenue</h3>
-          <div class="number revenue">
-            ¥{{ formatAmount(dashboard.totalRevenue) }}
-          </div>
-        </el-card>
-      </el-col>
+<el-col :span="6">
 
-    </el-row>
+<el-card class="stat-card">
 
+<div class="card-title">
+{{ $t("dashboard.revenue") }}
+</div>
 
 
+<div class="card-number">
 
-    <!-- OTA Statistics -->
-    <el-row :gutter="20" class="statistics-row">
+¥{{ data.totalRevenue }}
 
-      <el-col :span="6">
-        <el-card class="stat-card">
-          <h3>OTA Downloads</h3>
-          <div class="number">
-            {{ dashboard.otaDownloads }}
-          </div>
-        </el-card>
-      </el-col>
+</div>
 
-    </el-row>
 
+</el-card>
 
+</el-col>
 
-    <!-- Revenue Trend -->
-    <el-card class="activity-card">
 
-      <template #header>
-        Revenue Trend
-      </template>
 
 
-      <div
-        ref="revenueChart"
-        style="height:350px;width:100%;"
-      ></div>
+<el-col :span="6">
 
+<el-card class="stat-card">
 
-    </el-card>
+<div class="card-title">
+{{ $t("dashboard.onlineDevices") }}
+</div>
 
 
+<div
+class="card-number"
+:class="data.onlineDevices>0?'online':'offline'"
+>
 
+{{ data.onlineDevices }}
 
-    <!-- Order Trend -->
-    <el-card class="activity-card">
+</div>
 
-      <template #header>
-        Order Trend
-      </template>
 
+</el-card>
 
-      <div
-        ref="orderChart"
-        style="height:350px;width:100%;"
-      ></div>
+</el-col>
 
 
-    </el-card>
-    <!-- Recent Orders -->
-    <el-card class="activity-card">
 
-      <template #header>
-        Recent Orders
-      </template>
+</el-row>
 
 
-      <el-table
-        :data="dashboard.recentOrders"
-        border
-        style="width:100%;"
-      >
 
-        <el-table-column
-          prop="order_no"
-          label="Order No."
-          min-width="200"
-        />
 
 
-        <el-table-column
-          prop="username"
-          label="User"
-          min-width="140"
-        >
-          <template #default="scope">
-            {{ scope.row.username || "-" }}
-          </template>
-        </el-table-column>
+<!-- 第二层数据 -->
 
 
-        <el-table-column
-          prop="product"
-          label="Product"
-          min-width="140"
-        />
+<el-row
 
+:gutter="20"
 
-        <el-table-column
-          label="Amount"
-          width="120"
-        >
-          <template #default="scope">
-            ¥{{ formatAmount(scope.row.amount) }}
-          </template>
-        </el-table-column>
+class="stats-row"
 
+>
 
-        <el-table-column
-          label="Status"
-          width="120"
-        >
-          <template #default="scope">
 
-            <el-tag
-              :type="scope.row.status === 'paid' ? 'success' : 'warning'"
-            >
-              {{ scope.row.status }}
-            </el-tag>
+<el-col :span="6">
 
-          </template>
-        </el-table-column>
+<el-card class="stat-card">
 
+<div class="card-title">
 
-        <el-table-column
-          prop="created_at"
-          label="Created At"
-          min-width="180"
-        />
+{{ $t("dashboard.devices") }}
 
-      </el-table>
+</div>
 
-    </el-card>
 
+<div class="card-number">
 
+{{ data.devices }}
 
+</div>
 
-    <!-- Recent Payments -->
-    <el-card class="activity-card">
 
-      <template #header>
-        Recent Payments
-      </template>
+</el-card>
 
+</el-col>
 
-      <el-table
-        :data="dashboard.recentPayments"
-        border
-        style="width:100%;"
-      >
 
-        <el-table-column
-          prop="payment_no"
-          label="Payment No."
-          min-width="220"
-        />
 
 
-        <el-table-column
-          prop="order_no"
-          label="Order No."
-          min-width="180"
-        />
+<el-col :span="6">
 
+<el-card class="stat-card">
 
-        <el-table-column
-          prop="username"
-          label="User"
-          min-width="140"
-        >
 
-          <template #default="scope">
-            {{ scope.row.username || "-" }}
-          </template>
+<div class="card-title">
 
-        </el-table-column>
+{{ $t("dashboard.licenses") }}
 
+</div>
 
-        <el-table-column
-          prop="product"
-          label="Product"
-          min-width="140"
-        />
 
+<div class="card-number">
 
-        <el-table-column
-          label="Amount"
-          width="120"
-        >
+{{ data.licenses }}
 
-          <template #default="scope">
-            ¥{{ formatAmount(scope.row.amount) }}
-          </template>
+</div>
 
-        </el-table-column>
 
+</el-card>
 
-        <el-table-column
-          prop="provider"
-          label="Provider"
-          width="110"
-        />
+</el-col>
 
 
-        <el-table-column
-          label="Status"
-          width="120"
-        >
 
-          <template #default="scope">
 
-            <el-tag
-              :type="scope.row.status === 'paid' ? 'success' : 'warning'"
-            >
-              {{ scope.row.status }}
-            </el-tag>
+<el-col :span="6">
 
-          </template>
+<el-card class="stat-card">
 
-        </el-table-column>
 
+<div class="card-title">
 
-        <el-table-column
-          prop="created_at"
-          label="Created At"
-          min-width="180"
-        />
+{{ $t("dashboard.firmware") }}
 
-      </el-table>
+</div>
 
 
-    </el-card>
-    <!-- Recent OTA Activity -->
-    <el-card class="activity-card">
+<div class="card-number">
 
-      <template #header>
-        Recent OTA Activity
-      </template>
+{{ data.firmwares }}
 
+</div>
 
-      <el-table
-        :data="dashboard.recentOtaLogs"
-        border
-        style="width:100%;"
-      >
 
-        <el-table-column
-          prop="device_id"
-          label="Device"
-          min-width="200"
-        />
+</el-card>
 
 
-        <el-table-column
-          prop="version"
-          label="Version"
-          width="120"
-        />
+</el-col>
 
 
-        <el-table-column
-          label="Status"
-          width="140"
-        >
 
-          <template #default="scope">
 
-            <el-tag type="success">
-              {{ scope.row.status }}
-            </el-tag>
+<el-col :span="6">
 
-          </template>
+<el-card class="stat-card">
 
-        </el-table-column>
 
+<div class="card-title">
 
-        <el-table-column
-          prop="created_at"
-          label="Time"
-          min-width="180"
-        />
+{{ $t("dashboard.otaDownloads") }}
 
-      </el-table>
+</div>
 
 
-    </el-card>
+<div class="card-number">
 
+{{ data.otaDownloads }}
 
-  </div>
+</div>
+
+
+</el-card>
+
+</el-col>
+
+
+
+</el-row>
+<!-- 趋势图表 -->
+
+
+<el-row
+
+:gutter="20"
+
+class="chart-row"
+
+>
+
+
+<el-col :span="12">
+
+
+<el-card class="chart-card">
+
+
+<template #header>
+
+{{ $t("dashboard.revenueTrend") }}
 
 </template>
 
 
+
+<div
+
+ref="revenueChart"
+
+class="chart"
+
+></div>
+
+
+
+</el-card>
+
+
+</el-col>
+
+
+
+
+
+<el-col :span="12">
+
+
+<el-card class="chart-card">
+
+
+<template #header>
+
+{{ $t("dashboard.orderTrend") }}
+
+</template>
+
+
+
+<div
+
+ref="orderChart"
+
+class="chart"
+
+></div>
+
+
+
+</el-card>
+
+
+</el-col>
+
+
+
+</el-row>
+
+
+
+
+
+<!-- 系统信息 -->
+
+
+<el-row
+
+:gutter="20"
+
+class="info-row"
+
+>
+
+
+
+<el-col :span="12">
+
+
+<el-card class="info-card">
+
+
+<template #header>
+
+{{ $t("dashboard.latestFirmware") }}
+
+</template>
+
+
+
+<div class="firmware-box">
+
+
+<div>
+
+版本
+
+</div>
+
+
+
+<strong>
+
+{{ data.latestFirmware?.version || "-" }}
+
+</strong>
+
+
+
+</div>
+
+
+
+</el-card>
+
+
+</el-col>
+
+
+
+
+
+<el-col :span="12">
+
+
+<el-card class="info-card">
+
+
+<template #header>
+
+{{ $t("dashboard.systemStatus") }}
+
+</template>
+
+
+
+
+<div class="status-item">
+
+
+<span>
+
+{{ $t("dashboard.backend") }}
+
+</span>
+
+
+
+<el-tag type="success">
+
+{{ $t("status.running") }}
+
+</el-tag>
+
+
+
+</div>
+
+
+
+
+
+<div class="status-item">
+
+
+<span>
+
+{{ $t("dashboard.database") }}
+
+</span>
+
+
+
+<el-tag type="success">
+
+{{ $t("status.connected") }}
+
+</el-tag>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="status-item">
+
+
+<span>
+
+{{ $t("dashboard.otaService") }}
+
+</span>
+
+
+
+<el-tag type="success">
+
+{{ $t("status.active") }}
+
+</el-tag>
+
+
+
+</div>
+
+
+
+</el-card>
+
+
+</el-col>
+
+
+</el-row>
+<!-- 最近升级记录 -->
+
+
+<el-card class="table-card">
+
+
+<template #header>
+
+{{ $t("dashboard.recentOta") }}
+
+</template>
+
+
+
+<el-table
+
+:data="data.recentOtaLogs"
+
+border
+
+>
+
+
+<el-table-column
+
+prop="device_id"
+
+label="设备编号"
+
+/>
+
+
+
+<el-table-column
+
+prop="version"
+
+label="系统版本"
+
+/>
+
+
+
+
+<el-table-column
+
+prop="status"
+
+label="状态"
+
+>
+
+
+<template #default="scope">
+
+
+<el-tag
+
+type="success"
+
+v-if="scope.row.status==='downloaded'"
+
+>
+
+{{ $t("status.downloaded") }}
+
+</el-tag>
+
+
+<el-tag
+
+v-else
+
+>
+
+{{ scope.row.status }}
+
+</el-tag>
+
+
+</template>
+
+
+</el-table-column>
+
+
+
+
+
+<el-table-column
+
+prop="created_at"
+
+label="时间"
+
+width="180"
+
+/>
+
+
+</el-table>
+
+
+
+</el-card>
+
+
+
+
+
+<!-- 最近订单 -->
+
+
+<el-card
+
+class="table-card"
+
+>
+
+
+<template #header>
+
+{{ $t("dashboard.recentOrders") }}
+
+</template>
+
+
+
+<el-table
+
+:data="data.recentOrders"
+
+border
+
+>
+
+
+
+<el-table-column
+
+prop="order_no"
+
+label="订单编号"
+
+width="220"
+
+/>
+
+
+
+
+<el-table-column
+
+prop="username"
+
+label="用户"
+
+width="180"
+
+/>
+
+
+
+
+<el-table-column
+
+prop="product"
+
+label="产品"
+
+width="150"
+
+/>
+
+
+
+
+<el-table-column
+
+label="金额"
+
+width="100"
+
+>
+
+
+<template #default="scope">
+
+¥{{ scope.row.amount }}
+
+</template>
+
+
+</el-table-column>
+
+
+
+
+<el-table-column
+
+label="状态"
+
+width="120"
+
+>
+
+
+<template #default="scope">
+
+
+<el-tag
+
+type="success"
+
+v-if="scope.row.status==='paid'"
+
+>
+
+{{ $t("status.paid") }}
+
+</el-tag>
+
+
+<el-tag
+
+v-else
+
+>
+
+{{ scope.row.status }}
+
+</el-tag>
+
+
+</template>
+
+
+</el-table-column>
+
+
+
+
+
+<el-table-column
+
+prop="created_at"
+
+label="时间"
+
+width="180"
+
+/>
+
+
+</el-table>
+
+
+
+</el-card>
+
+
+
+
+
+
+
+<!-- 最近交易 -->
+
+
+<el-card
+
+class="table-card"
+
+>
+
+
+<template #header>
+
+{{ $t("dashboard.recentPayments") }}
+
+</template>
+
+
+
+
+<el-table
+
+:data="data.recentPayments"
+
+border
+
+>
+
+
+
+
+<el-table-column
+
+prop="payment_no"
+
+label="交易编号"
+
+width="240"
+
+/>
+
+
+
+
+
+<el-table-column
+
+prop="username"
+
+label="用户"
+
+width="180"
+
+/>
+
+
+
+
+
+<el-table-column
+
+prop="product"
+
+label="产品"
+
+width="150"
+
+/>
+
+
+
+
+
+<el-table-column
+
+label="金额"
+
+width="100"
+
+>
+
+
+<template #default="scope">
+
+¥{{ scope.row.amount }}
+
+</template>
+
+
+</el-table-column>
+
+
+
+
+
+<el-table-column
+
+label="状态"
+
+width="120"
+
+>
+
+
+<template #default="scope">
+
+
+<el-tag
+
+type="success"
+
+v-if="scope.row.status==='paid'"
+
+>
+
+{{ $t("status.paid") }}
+
+</el-tag>
+
+
+<el-tag
+
+v-else
+
+>
+
+{{ scope.row.status }}
+
+</el-tag>
+
+
+</template>
+
+
+</el-table-column>
+
+
+
+
+<el-table-column
+
+prop="created_at"
+
+label="时间"
+
+/>
+
+
+</el-table>
+
+
+
+</el-card>
+
+
+
+
+</div>
+
+</template>
 <script setup>
 
 import {
   ref,
   onMounted,
+  onBeforeUnmount,
   nextTick
 } from "vue";
 
@@ -448,89 +906,64 @@ import {
 
 
 
-const revenueChart = ref(null);
+const data = ref({
 
-const revenueData = ref([]);
+  users:0,
+
+  orders:0,
+
+  products:0,
+
+  devices:0,
+
+  onlineDevices:0,
+
+  licenses:0,
+
+  firmwares:0,
+
+  otaDownloads:0,
+
+  totalRevenue:0,
 
 
-const orderChart = ref(null);
+  recentOrders:[],
 
-const orderData = ref([]);
+  recentPayments:[],
 
 
+  latestFirmware:null,
 
-const dashboard = ref({
 
-  users: 0,
-  orders: 0,
-  products: 0,
-  admins: 0,
-
-  devices: 0,
-  onlineDevices: 0,
-
-  licenses: 0,
-  firmwares: 0,
-
-  payments: 0,
-  paidPayments: 0,
-  pendingPayments: 0,
-  totalRevenue: 0,
-
-  otaDownloads: 0,
-
-  latestFirmware: null,
-
-  recentOrders: [],
-
-  recentPayments: [],
-
-  recentOtaLogs: [],
+  recentOtaLogs:[]
 
 });
 
 
 
-function formatAmount(value) {
 
-  const amount = Number(value);
+const revenueChart = ref(null);
 
-
-  if (!Number.isFinite(amount)) {
-
-    return "0.00";
-
-  }
+const orderChart = ref(null);
 
 
-  return amount.toFixed(2);
 
-}
+let revenueChartInstance=null;
+
+let orderChartInstance=null;
 
 
 
 
-async function loadDashboard() {
 
-  try {
-
-    const res = await getDashboard();
+async function loadDashboard(){
 
 
-    dashboard.value = {
-
-      ...dashboard.value,
-
-      ...res.data.data,
-
-    };
+  const res = await getDashboard();
 
 
-  } catch(err) {
+  data.value=res.data.data;
 
-    console.error(err);
-
-  }
 
 }
 
@@ -538,78 +971,75 @@ async function loadDashboard() {
 
 
 
-
-async function loadRevenueChart() {
-
-  try {
+async function loadRevenueChart(){
 
 
-    const res = await getRevenueTrend();
-
-
-    revenueData.value = res.data.data;
-
-
-    await nextTick();
-
-
-    const chart =
-      echarts.init(revenueChart.value);
+  const res = await getRevenueTrend();
 
 
 
-    chart.setOption({
-
-      title: {
-        text: "Revenue Trend"
-      },
+  await nextTick();
 
 
-      tooltip: {},
 
+  if(!revenueChart.value){
 
-      xAxis: {
-
-        type: "category",
-
-        data: revenueData.value.map(
-          item => item.date
-        )
-
-      },
-
-
-      yAxis: {
-
-        type: "value"
-
-      },
-
-
-      series: [
-
-        {
-
-          name: "Revenue",
-
-          type: "line",
-
-          data: revenueData.value.map(
-            item => item.amount
-          )
-
-        }
-
-      ]
-
-    });
-
-
-  } catch(err) {
-
-    console.error(err);
+    return;
 
   }
+
+
+
+  revenueChartInstance =
+    echarts.init(
+      revenueChart.value
+    );
+
+
+
+
+  revenueChartInstance.setOption({
+
+    tooltip:{
+      trigger:"axis"
+    },
+
+
+    xAxis:{
+
+      type:"category",
+
+      data:
+      res.data.data.map(
+        item=>item.date
+      )
+
+    },
+
+
+    yAxis:{
+
+      type:"value"
+
+    },
+
+
+    series:[{
+
+      type:"line",
+
+      smooth:true,
+
+      data:
+      res.data.data.map(
+        item=>item.amount
+      )
+
+    }]
+
+
+  });
+
 
 }
 
@@ -618,79 +1048,77 @@ async function loadRevenueChart() {
 
 
 
-async function loadOrderChart() {
 
-  try {
-
-
-    const res = await getOrderTrend();
+async function loadOrderChart(){
 
 
-    orderData.value = res.data.data;
-
-
-    await nextTick();
-
-
-    const chart =
-      echarts.init(orderChart.value);
+ const res = await getOrderTrend();
 
 
 
-    chart.setOption({
-
-      title: {
-
-        text: "Order Trend"
-
-      },
+ await nextTick();
 
 
-      tooltip: {},
+
+ if(!orderChart.value){
+
+    return;
+
+ }
 
 
-      xAxis: {
 
-        type: "category",
-
-        data: orderData.value.map(
-          item => item.date
-        )
-
-      },
+ orderChartInstance =
+ echarts.init(
+    orderChart.value
+ );
 
 
-      yAxis: {
 
-        type: "value"
-
-      },
+ orderChartInstance.setOption({
 
 
-      series: [
-
-        {
-
-          name: "Orders",
-
-          type: "line",
-
-          data: orderData.value.map(
-            item => item.count
-          )
-
-        }
-
-      ]
-
-    });
+ tooltip:{
+    trigger:"axis"
+ },
 
 
-  } catch(err) {
+ xAxis:{
 
-    console.error(err);
+    type:"category",
 
-  }
+    data:
+    res.data.data.map(
+      item=>item.date
+    )
+
+ },
+
+
+ yAxis:{
+
+    type:"value"
+
+ },
+
+
+ series:[{
+
+
+    type:"bar",
+
+
+    data:
+    res.data.data.map(
+      item=>item.count
+    )
+
+
+ }]
+
+
+ });
+
 
 }
 
@@ -698,16 +1126,78 @@ async function loadOrderChart() {
 
 
 
-onMounted(()=>{
+
+function resizeCharts(){
 
 
-  loadDashboard();
+ if(revenueChartInstance){
+
+    revenueChartInstance.resize();
+
+ }
 
 
-  loadRevenueChart();
+ if(orderChartInstance){
+
+    orderChartInstance.resize();
+
+ }
 
 
-  loadOrderChart();
+}
+
+
+
+
+
+
+onMounted(async()=>{
+
+
+ await loadDashboard();
+
+
+ await loadRevenueChart();
+
+
+ await loadOrderChart();
+
+
+
+ window.addEventListener(
+    "resize",
+    resizeCharts
+ );
+
+
+});
+
+
+
+
+
+
+onBeforeUnmount(()=>{
+
+
+ window.removeEventListener(
+    "resize",
+    resizeCharts
+ );
+
+
+ if(revenueChartInstance){
+
+    revenueChartInstance.dispose();
+
+ }
+
+
+ if(orderChartInstance){
+
+    orderChartInstance.dispose();
+
+ }
 
 
 });
@@ -715,84 +1205,330 @@ onMounted(()=>{
 
 
 </script>
-
-
 <style scoped>
 
-.page {
 
-  padding: 20px;
+.dashboard{
+
+
+width:100%;
+
+
+box-sizing:border-box;
+
 
 }
 
 
 
-.statistics-row {
+.stats-row{
 
-  margin-top: 20px;
+
+margin-bottom:20px;
+
 
 }
 
 
 
-.statistics-row:first-of-type {
+/* 数据卡片 */
 
-  margin-top: 30px;
+
+.stat-card{
+
+
+height:150px;
+
+
+border-radius:12px;
+
+
+transition:all .2s ease;
+
 
 }
 
 
 
-.stat-card {
+.stat-card:hover{
 
-  min-height: 125px;
+
+transform:translateY(-2px);
+
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.08);
+
 
 }
 
 
 
-.stat-card h3 {
+.card-title{
 
-  min-height: 26px;
 
-  margin: 0;
+font-size:14px;
+
+
+color:#64748B;
+
 
 }
 
 
 
-.number {
+.card-number{
 
-  margin-top: 15px;
 
-  font-size: 32px;
+margin-top:16px;
 
-  font-weight: bold;
+
+font-size:32px;
+
+
+font-weight:700;
+
+
+color:#111827;
+
 
 }
 
 
 
-.small {
+.online{
 
-  font-size: 26px;
+
+color:#16A34A;
+
 
 }
 
 
 
-.revenue {
+.offline{
 
-  font-size: 28px;
+
+color:#94A3B8;
+
 
 }
 
 
 
-.activity-card {
 
-  margin-top: 30px;
+
+/* 图表 */
+
+
+.chart-row{
+
+
+margin-top:20px;
+
 
 }
+
+
+
+.chart-card{
+
+height:330px;
+
+overflow:hidden;
+
+}
+
+
+.chart{
+
+width:100%;
+
+height:240px;
+
+}
+
+
+
+
+
+/* 信息卡 */
+
+
+.info-row{
+
+
+margin-top:20px;
+
+
+}
+
+
+
+.info-card{
+
+
+height:220px;
+
+
+border-radius:12px;
+
+
+}
+
+
+
+
+.firmware-box{
+
+
+display:flex;
+
+
+flex-direction:column;
+
+
+gap:16px;
+
+
+font-size:16px;
+
+
+color:#475569;
+
+
+}
+
+
+
+.firmware-box strong{
+
+
+font-size:32px;
+
+
+color:#111827;
+
+
+}
+
+
+
+
+
+.status-item{
+
+
+display:flex;
+
+
+justify-content:space-between;
+
+
+align-items:center;
+
+
+padding:12px 0;
+
+
+border-bottom:1px solid #E5E7EB;
+
+
+}
+
+
+
+.status-item:last-child{
+
+
+border-bottom:none;
+
+
+}
+
+
+
+
+
+/* 表格卡片 */
+
+
+.table-card{
+
+
+margin-top:20px;
+
+
+border-radius:12px;
+
+
+}
+
+
+
+:deep(.el-card__header){
+
+
+font-weight:600;
+
+
+font-size:16px;
+
+
+}
+
+
+
+
+:deep(.el-table){
+
+
+width:100%;
+
+
+}
+
+
+
+
+:deep(.el-table th){
+
+
+background:#F8FAFC;
+
+
+font-weight:600;
+
+
+}
+
+
+
+:deep(.el-table tbody tr:hover > td){
+
+
+background:#EFF6FF;
+
+
+}
+
+
+
+
+
+
+/* 标签 */
+
+
+:deep(.el-tag){
+
+
+border-radius:6px;
+
+
+}
+
+
+
 
 </style>

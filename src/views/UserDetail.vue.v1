@@ -1,0 +1,350 @@
+<template>
+
+<div>
+
+
+<div class="page-header">
+
+<h2>
+User Detail
+</h2>
+
+</div>
+
+
+
+<el-card
+v-if="data.user"
+style="margin-top:20px;"
+>
+
+<template #header>
+User Information
+</template>
+
+
+<el-descriptions
+border
+:column="2"
+>
+
+<el-descriptions-item label="ID">
+{{ data.user.id }}
+</el-descriptions-item>
+
+
+<el-descriptions-item label="Username">
+{{ data.user.username }}
+</el-descriptions-item>
+
+
+<el-descriptions-item label="Email">
+{{ data.user.email || "-" }}
+</el-descriptions-item>
+
+
+<el-descriptions-item label="Created At">
+{{ data.user.created_at }}
+</el-descriptions-item>
+
+
+</el-descriptions>
+
+
+</el-card>
+
+
+
+<el-card
+style="margin-top:20px;"
+>
+
+<template #header>
+Orders
+</template>
+
+
+<el-table
+:data="data.orders"
+border
+>
+
+
+<el-table-column
+prop="order_no"
+label="Order No"
+/>
+
+
+<el-table-column
+prop="product"
+label="Product"
+/>
+
+
+<el-table-column
+prop="amount"
+label="Amount"
+/>
+
+
+<el-table-column
+prop="status"
+label="Status"
+/>
+
+
+</el-table>
+
+
+</el-card>
+
+
+
+
+<el-card
+style="margin-top:20px;"
+>
+
+<template #header>
+Payments
+</template>
+
+
+<el-table
+:data="data.payments"
+border
+>
+
+
+<el-table-column
+prop="payment_no"
+label="Payment No"
+/>
+
+
+<el-table-column
+prop="amount"
+label="Amount"
+/>
+
+
+<el-table-column
+prop="status"
+label="Status"
+/>
+
+
+<el-table-column
+prop="transaction_id"
+label="Transaction"
+/>
+
+
+</el-table>
+
+
+</el-card>
+
+
+
+
+
+<el-card
+style="margin-top:20px;"
+>
+
+<template #header>
+Licenses
+</template>
+
+
+<el-table
+:data="data.licenses"
+border
+>
+
+
+<el-table-column
+prop="license_key"
+label="License Key"
+/>
+
+
+<el-table-column
+prop="product"
+label="Product"
+/>
+
+
+<el-table-column
+prop="status"
+label="Status"
+/>
+
+
+<el-table-column
+prop="device_id"
+label="Device"
+/>
+
+
+</el-table>
+
+
+</el-card>
+
+
+
+
+
+<el-card
+style="margin-top:20px;"
+>
+
+<template #header>
+Devices
+</template>
+
+
+<el-table
+:data="data.devices"
+border
+>
+
+
+<el-table-column
+prop="device_id"
+label="Device ID"
+/>
+
+
+<el-table-column
+prop="model"
+label="Model"
+/>
+
+
+<el-table-column
+prop="firmware_version"
+label="Firmware"
+/>
+
+
+<el-table-column
+prop="status"
+label="Status"
+/>
+
+
+<el-table-column
+prop="last_seen"
+label="Last Seen"
+/>
+
+
+</el-table>
+
+
+</el-card>
+
+
+
+</div>
+
+</template>
+
+
+
+<script setup>
+
+
+import {
+    ref,
+    onMounted
+} from "vue";
+
+
+import {
+    useRoute
+} from "vue-router";
+
+
+import {
+    getUserDetail
+} from "../api/user";
+
+
+
+const route = useRoute();
+
+
+const data = ref({
+
+    user:null,
+
+    orders:[],
+
+    payments:[],
+
+    licenses:[],
+
+    devices:[]
+
+});
+
+
+
+
+async function loadUser(){
+
+
+    try{
+
+
+        const res =
+        await getUserDetail(
+            route.params.id
+        );
+
+
+        data.value =
+        res.data.data;
+
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+
+}
+
+
+
+
+onMounted(()=>{
+
+    loadUser();
+
+});
+
+
+</script>
+
+
+
+<style scoped>
+
+.page-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+</style>

@@ -1,0 +1,793 @@
+<template>
+<div class="dashboard">
+
+  <el-row :gutter="20">
+
+    <el-col :span="6">
+      <el-card>
+        <div class="card-title">
+          Users
+        </div>
+
+        <div class="card-number">
+          {{ data.users }}
+        </div>
+      </el-card>
+    </el-col>
+
+
+    <el-col :span="6">
+      <el-card>
+
+        <div class="card-title">
+          Orders
+        </div>
+
+        <div class="card-number">
+          {{ data.orders }}
+        </div>
+
+      </el-card>
+    </el-col>
+
+
+    <el-col :span="6">
+      <el-card>
+
+        <div class="card-title">
+          Devices
+        </div>
+
+        <div class="card-number">
+          {{ data.devices }}
+        </div>
+
+      </el-card>
+    </el-col>
+
+
+    <el-col :span="6">
+      <el-card>
+
+        <div class="card-title">
+          Online Devices
+        </div>
+
+        <div
+          class="card-number"
+          :class="data.onlineDevices > 0 ? 'online':'offline'"
+        >
+          {{ data.onlineDevices }}
+        </div>
+
+      </el-card>
+    </el-col>
+
+  </el-row>
+
+
+
+  <el-row
+    :gutter="20"
+    style="margin-top:20px;"
+  >
+
+    <el-col :span="6">
+
+      <el-card>
+
+        <div class="card-title">
+          Licenses
+        </div>
+
+        <div class="card-number">
+          {{ data.licenses }}
+        </div>
+
+      </el-card>
+
+    </el-col>
+
+
+
+    <el-col :span="6">
+
+      <el-card>
+
+        <div class="card-title">
+          Firmware
+        </div>
+
+        <div class="card-number">
+          {{ data.firmwares }}
+        </div>
+
+      </el-card>
+
+    </el-col>
+
+
+
+    <el-col :span="6">
+
+      <el-card>
+
+        <div class="card-title">
+          OTA Downloads
+        </div>
+
+        <div class="card-number">
+          {{ data.otaDownloads }}
+        </div>
+
+      </el-card>
+
+    </el-col>
+
+
+
+    <el-col :span="6">
+
+      <el-card>
+
+        <div class="card-title">
+          Revenue
+        </div>
+
+        <div class="card-number">
+          ¥{{ data.totalRevenue }}
+        </div>
+
+      </el-card>
+
+    </el-col>
+
+  </el-row>
+<!-- Dashboard Charts -->
+
+  <el-row
+    :gutter="20"
+    style="margin-top:20px;"
+  >
+
+    <el-col :span="12">
+
+      <el-card>
+
+        <template #header>
+          Revenue Trend
+        </template>
+
+        <div
+          ref="revenueChart"
+          class="chart"
+        ></div>
+
+      </el-card>
+
+    </el-col>
+
+
+
+    <el-col :span="12">
+
+      <el-card>
+
+        <template #header>
+          Order Trend
+        </template>
+
+
+        <div
+          ref="orderChart"
+          class="chart"
+        ></div>
+
+
+      </el-card>
+
+    </el-col>
+
+  </el-row>
+
+
+
+  <el-row
+    :gutter="20"
+    style="margin-top:20px;"
+  >
+
+    <el-col :span="12">
+
+      <el-card>
+
+        <template #header>
+          Latest Firmware
+        </template>
+
+
+        <div class="info-box">
+
+          <div>
+            Version
+          </div>
+
+          <strong>
+            {{ data.latestFirmware?.version || "-" }}
+          </strong>
+
+        </div>
+
+
+      </el-card>
+
+    </el-col>
+
+
+
+    <el-col :span="12">
+
+      <el-card>
+
+        <template #header>
+          System Status
+        </template>
+
+
+        <div class="status-item">
+
+          Backend
+
+          <el-tag type="success">
+            Running
+          </el-tag>
+
+        </div>
+
+
+        <div class="status-item">
+
+          Database
+
+          <el-tag type="success">
+            Connected
+          </el-tag>
+
+        </div>
+
+
+        <div class="status-item">
+
+          OTA Service
+
+          <el-tag type="success">
+            Active
+          </el-tag>
+
+        </div>
+
+
+      </el-card>
+
+    </el-col>
+
+  </el-row>
+
+
+
+
+  <el-row
+    :gutter="20"
+    style="margin-top:20px;"
+  >
+
+    <el-col :span="24">
+
+      <el-card>
+
+        <template #header>
+          Recent OTA Activity
+        </template>
+
+
+        <el-table
+          :data="data.recentOtaLogs"
+          border
+        >
+
+          <el-table-column
+            prop="device_id"
+            label="Device"
+          />
+
+
+          <el-table-column
+            prop="version"
+            label="Version"
+          />
+
+
+          <el-table-column
+            prop="status"
+            label="Status"
+          />
+
+
+          <el-table-column
+            prop="created_at"
+            label="Time"
+            width="180"
+          />
+
+        </el-table>
+
+
+      </el-card>
+<el-card
+  style="margin-top:20px;"
+>
+
+<template #header>
+  Recent Orders
+</template>
+
+
+<el-table
+  :data="data.recentOrders"
+  border
+>
+
+
+<el-table-column
+  prop="order_no"
+  label="Order"
+  width="220"
+/>
+
+
+<el-table-column
+  prop="username"
+  label="User"
+  width="180"
+/>
+
+
+<el-table-column
+  prop="product"
+  label="Product"
+  width="150"
+/>
+
+
+<el-table-column
+  label="Amount"
+  width="100"
+>
+
+<template #default="scope">
+  ¥{{ scope.row.amount }}
+</template>
+
+</el-table-column>
+
+<el-table-column
+  prop="status"
+  label="Status"
+  width="120"
+/>
+
+
+<el-table-column
+  prop="created_at"
+  label="Time"
+  width="180"
+/>
+
+
+</el-table>
+
+
+</el-card>
+
+
+
+<el-card
+style="margin-top:20px;"
+>
+
+
+<template #header>
+  Recent Payments
+</template>
+
+
+<el-table
+:data="data.recentPayments"
+  border
+>
+
+
+<el-table-column
+  prop="payment_no"
+  label="Payment"
+  width="240"
+/>
+
+
+<el-table-column
+  prop="username"
+  label="User"
+  width="180"
+/>
+
+
+<el-table-column
+  prop="product"
+  label="Product"
+  width="150"
+/>
+
+
+<el-table-column
+  label="Amount"
+  width="100"
+>
+
+<template #default="scope">
+
+  ¥{{ scope.row.amount }}
+
+</template>
+
+</el-table-column>
+
+<el-table-column
+  prop="status"
+  label="Status"
+  width="120"
+/>
+
+
+<el-table-column
+  prop="created_at"
+  label="Time"
+/>
+
+
+</el-table>
+
+
+</el-card>
+    </el-col>
+
+
+  </el-row>
+
+
+</div>
+</template>
+<script setup>
+
+import {
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  nextTick
+} from "vue";
+
+import * as echarts from "echarts";
+
+import {
+  getDashboard,
+  getRevenueTrend,
+  getOrderTrend
+} from "../api/dashboard";
+
+
+const data = ref({
+
+  users:0,
+  orders:0,
+  products:0,
+  devices:0,
+  onlineDevices:0,
+  licenses:0,
+  firmwares:0,
+  otaDownloads:0,
+  totalRevenue:0,
+
+recentOrders: [],
+recentPayments: [],
+
+  latestFirmware:null,
+
+  recentOtaLogs:[]
+
+});
+
+
+const revenueChart = ref(null);
+
+const orderChart = ref(null);
+
+
+let revenueChartInstance = null;
+
+let orderChartInstance = null;
+
+
+
+async function loadDashboard(){
+
+  const res = await getDashboard();
+
+  data.value = res.data.data;
+
+}
+
+
+
+async function loadRevenueChart(){
+
+  const res = await getRevenueTrend();
+
+
+  await nextTick();
+
+
+  if(!revenueChart.value){
+    return;
+  }
+
+
+  revenueChartInstance =
+    echarts.init(
+      revenueChart.value
+    );
+
+
+  revenueChartInstance.setOption({
+
+    tooltip:{
+      trigger:"axis"
+    },
+
+
+    xAxis:{
+      type:"category",
+      data:
+        res.data.data.map(
+          item=>item.date
+        )
+    },
+
+
+    yAxis:{
+      type:"value"
+    },
+
+
+    series:[{
+
+      type:"line",
+
+      smooth:true,
+
+      data:
+        res.data.data.map(
+          item=>item.amount
+        )
+
+    }]
+
+  });
+
+
+}
+
+
+
+
+async function loadOrderChart(){
+
+  const res = await getOrderTrend();
+
+
+  await nextTick();
+
+
+  if(!orderChart.value){
+    return;
+  }
+
+
+  orderChartInstance =
+    echarts.init(
+      orderChart.value
+    );
+
+
+  orderChartInstance.setOption({
+
+    tooltip:{
+      trigger:"axis"
+    },
+
+
+    xAxis:{
+      type:"category",
+      data:
+        res.data.data.map(
+          item=>item.date
+        )
+    },
+
+
+    yAxis:{
+      type:"value"
+    },
+
+
+   series:[{
+
+  type:"bar",
+
+  data:
+    res.data.data.map(
+      item=>item.count
+    )
+
+}]
+
+  });
+
+
+}
+
+
+
+
+function resizeCharts(){
+
+  if(revenueChartInstance){
+
+    revenueChartInstance.resize();
+
+  }
+
+
+  if(orderChartInstance){
+
+    orderChartInstance.resize();
+
+  }
+
+}
+
+
+
+onMounted(async()=>{
+
+
+  await loadDashboard();
+
+
+  await loadRevenueChart();
+
+
+  await loadOrderChart();
+
+
+  window.addEventListener(
+    "resize",
+    resizeCharts
+  );
+
+
+});
+
+
+
+onBeforeUnmount(()=>{
+
+
+  window.removeEventListener(
+    "resize",
+    resizeCharts
+  );
+
+
+  if(revenueChartInstance){
+
+    revenueChartInstance.dispose();
+
+  }
+
+
+  if(orderChartInstance){
+
+    orderChartInstance.dispose();
+
+  }
+
+
+});
+
+
+</script>
+
+
+
+<style scoped>
+
+.dashboard{
+
+  padding:20px;
+
+}
+
+
+.card-title{
+
+  color:#666;
+
+  font-size:14px;
+
+}
+
+
+.card-number{
+
+  margin-top:10px;
+
+  font-size:30px;
+
+  font-weight:bold;
+
+}
+
+
+.online{
+
+  color:#67c23a;
+
+}
+
+
+.offline{
+
+  color:#909399;
+
+}
+
+
+.chart{
+
+  width:100%;
+
+  height:300px;
+
+}
+
+
+.info-box{
+
+  font-size:18px;
+
+}
+
+
+.status-item{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  margin-bottom:15px;
+
+}
+
+
+</style>

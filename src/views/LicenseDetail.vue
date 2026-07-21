@@ -1,116 +1,437 @@
 <template>
-  <div>
 
-    <h2>License Detail</h2>
-
-
-    <el-card v-if="license">
-
-      <el-descriptions
-        title="License Information"
-        border
-      >
-
-        <el-descriptions-item label="License Key">
-          {{ license.license_key }}
-        </el-descriptions-item>
+<div class="page">
 
 
-        <el-descriptions-item label="Status">
-          {{ license.status }}
-        </el-descriptions-item>
+<div class="page-header">
+
+<h2>
+授权详情
+</h2>
 
 
-        <el-descriptions-item label="Device">
-          {{ license.device_id || "None" }}
-        </el-descriptions-item>
-
-<el-descriptions-item label="User">
-  {{ license.username || "-" }}
-</el-descriptions-item>
+<span>
+查看授权状态和设备绑定信息
+</span>
 
 
-<el-descriptions-item label="Product">
-  {{ license.product || "-" }}
-</el-descriptions-item>
+</div>
 
 
-<el-descriptions-item label="Order">
-  {{ license.order_no || "-" }}
-</el-descriptions-item>
 
 
-<el-descriptions-item label="Activation">
-  {{ license.activated_count }} / {{ license.activation_limit }}
-</el-descriptions-item>
-
-        <el-descriptions-item label="Expires">
-          {{ license.expires_at || "Unlimited" }}
-        </el-descriptions-item>
+<el-card
+class="section-card"
+v-if="license"
+>
 
 
-        <el-descriptions-item label="Activated At">
-          {{ license.activated_at || "-" }}
-        </el-descriptions-item>
+<template #header>
 
+授权信息
 
-        <el-descriptions-item label="Created At">
-          {{ license.created_at }}
-        </el-descriptions-item>
-
-
-      </el-descriptions>
-
-
-    </el-card>
-
-
-  </div>
 </template>
+
+
+
+
+<el-descriptions
+
+border
+
+:column="2"
+
+>
+
+
+
+<el-descriptions-item label="授权码">
+
+{{license.license_key}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="授权状态">
+
+
+<el-tag
+
+v-if="license.status==='active'"
+
+type="success"
+
+>
+
+已激活
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else-if="license.status==='revoked'"
+
+type="danger"
+
+>
+
+已撤销
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else
+
+type="info"
+
+>
+
+未激活
+
+</el-tag>
+
+
+
+</el-descriptions-item>
+
+
+
+
+
+<el-descriptions-item label="用户账号">
+
+{{license.username || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+
+<el-descriptions-item label="产品名称">
+
+{{license.product || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+
+<el-descriptions-item label="订单编号">
+
+{{license.order_no || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+
+<el-descriptions-item label="激活次数">
+
+{{license.activated_count}}
+
+/
+{{license.activation_limit}}
+
+</el-descriptions-item>
+
+
+
+
+
+<el-descriptions-item label="激活时间">
+
+{{license.activated_at || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+
+<el-descriptions-item label="过期时间">
+
+{{license.expires_at || "无限期"}}
+
+</el-descriptions-item>
+
+
+
+
+
+<el-descriptions-item label="创建时间">
+
+{{license.created_at}}
+
+</el-descriptions-item>
+
+
+
+</el-descriptions>
+
+
+</el-card>
+
+
+
+
+
+
+<el-card
+
+class="section-card"
+
+v-if="license"
+
+>
+
+
+<template #header>
+
+设备信息
+
+</template>
+
+
+
+<el-descriptions
+
+border
+
+:column="2"
+
+>
+
+
+
+<el-descriptions-item label="绑定设备">
+
+{{license.device_id || "未绑定"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="设备状态">
+
+{{license.device_status || "-"}}
+
+</el-descriptions-item>
+
+
+
+
+<el-descriptions-item label="设备型号">
+
+{{license.device_model || "-"}}
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="系统版本">
+
+{{license.firmware_version || "-"}}
+
+</el-descriptions-item>
+
+
+
+</el-descriptions>
+
+
+
+</el-card>
+
+
+
+</div>
+
+
+</template>
+
+
 
 
 
 <script setup>
 
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
 
-import { getLicense } from "../api/license";
+import {
+
+ref,
+
+onMounted
+
+} from "vue";
+
+
+
+import {
+
+useRoute
+
+} from "vue-router";
+
+
+
+import {
+
+getLicense
+
+} from "../api/license";
+
+
+
 
 
 const route = useRoute();
+
 
 
 const license = ref(null);
 
 
 
+
+
+
 async function loadLicense(){
 
-    try {
 
-        const res = await getLicense(
-            route.params.licenseKey
-        );
+try{
 
 
-        license.value = res.data.data;
+const res = await getLicense(
+
+route.params.licenseKey
+
+);
 
 
-    } catch(err){
 
-        console.error(err);
+license.value = res.data.data;
 
-    }
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+}
+
 
 }
 
 
 
+
+
+
 onMounted(()=>{
 
-    loadLicense();
+
+loadLicense();
+
 
 });
 
+
+
 </script>
+
+
+
+
+
+<style scoped>
+
+
+.page{
+
+
+padding:20px;
+
+
+}
+
+
+
+
+.page-header{
+
+
+display:flex;
+
+
+justify-content:space-between;
+
+
+align-items:center;
+
+
+}
+
+
+
+.page-header h2{
+
+
+margin:0;
+
+
+font-size:22px;
+
+
+}
+
+
+
+
+.page-header span{
+
+
+color:#909399;
+
+
+font-size:14px;
+
+
+}
+
+
+
+
+.section-card{
+
+
+margin-top:20px;
+
+
+}
+
+
+
+:deep(.el-card__header){
+
+
+font-weight:600;
+
+
+}
+
+
+
+</style>
