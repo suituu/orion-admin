@@ -1,7 +1,9 @@
 <template>
 
-<div class="dashboard">
-
+<div
+class="dashboard"
+v-loading="loading"
+>
 
 <!-- 核心数据 -->
 
@@ -903,8 +905,10 @@ import {
   getRevenueTrend,
   getOrderTrend
 } from "../api/dashboard";
-
-
+import {
+  error
+} from "../utils/message";
+const loading = ref(false);
 
 const data = ref({
 
@@ -958,18 +962,37 @@ let orderChartInstance=null;
 
 async function loadDashboard(){
 
+  try{
 
-  const res = await getDashboard();
+    loading.value = true;
 
 
-  data.value=res.data.data;
+    const res = await getDashboard();
+
+
+    data.value = res.data.data;
+
+
+ }catch(err){
+
+
+    console.error(err);
+
+
+    error(
+        "Dashboard加载失败"
+    );
+
+
+}finally{
+
+
+    loading.value = false;
 
 
 }
 
-
-
-
+}
 
 async function loadRevenueChart(){
 
@@ -988,7 +1011,11 @@ async function loadRevenueChart(){
 
   }
 
+if(revenueChartInstance){
 
+    revenueChartInstance.dispose();
+
+}
 
   revenueChartInstance =
     echarts.init(
@@ -1066,7 +1093,11 @@ async function loadOrderChart(){
 
  }
 
+if(orderChartInstance){
 
+    orderChartInstance.dispose();
+
+}
 
  orderChartInstance =
  echarts.init(
