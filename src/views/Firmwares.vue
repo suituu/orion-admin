@@ -467,8 +467,11 @@ import {
   uploadFirmware
 } from "../api/firmware";
 
-
-
+import {
+    success,
+    error,
+    warning
+} from "../utils/message";
 const firmwares = ref([]);
 
 
@@ -547,8 +550,7 @@ async function loadFirmwares(){
 
     console.error(err);
 
-    alert("加载固件失败");
-
+error("加载固件失败");
   }
 
 }
@@ -612,8 +614,7 @@ async function handleUpload(){
 
   if(!uploadForm.value.version.trim()){
 
-    alert("请输入版本号");
-
+warning("请输入版本号");
     return;
 
   }
@@ -622,8 +623,7 @@ async function handleUpload(){
 
   if(!uploadForm.value.hardware_version.trim()){
 
-    alert("请输入硬件版本");
-
+warning("请输入硬件版本");
     return;
 
   }
@@ -633,8 +633,7 @@ async function handleUpload(){
 
   if(!uploadForm.value.min_version.trim()){
 
-    alert("请输入最低版本");
-
+warning("请输入最低版本");
     return;
 
   }
@@ -645,8 +644,7 @@ async function handleUpload(){
 
   if(!uploadForm.value.file){
 
-    alert("请选择固件文件");
-
+warning("请选择固件文件");
     return;
 
   }
@@ -783,8 +781,7 @@ async function handleUpload(){
 
 
 
-    alert("固件上传成功");
-
+success("固件上传成功");
 
 
   }catch(err){
@@ -794,14 +791,10 @@ async function handleUpload(){
 
 
 
-    alert(
-
-      err.response?.data?.message ||
-
-      "上传失败"
-
-    );
-
+error(
+  err.response?.data?.message ||
+  "上传失败"
+);
 
 
   }finally{
@@ -857,8 +850,7 @@ async function handleDelete(id){
 
 
 
-    alert("删除失败");
-
+error("删除失败");
 
   }
 

@@ -278,7 +278,10 @@ import {
     payOrder
 } from "../api/order";
 
-
+import {
+    success,
+    error
+} from "../utils/message";
 
 const orders = ref([]);
 
@@ -340,16 +343,11 @@ async function loadOrders(){
 async function handlePay(id){
 
 
-
     if(!confirm("确认支付该订单吗？")){
-
 
         return;
 
-
     }
-
-
 
 
     try{
@@ -359,16 +357,10 @@ async function handlePay(id){
 
 
 
-        alert(
-
-            "支付成功\n授权码："
-
-            +
-
+        success(
+            "支付成功，授权码：" +
             res.data.data.license_key
-
         );
-
 
 
         await loadOrders();
@@ -381,16 +373,15 @@ async function handlePay(id){
         console.error(err);
 
 
-
-        alert("支付失败");
+        error(
+            "支付失败"
+        );
 
 
     }
 
 
-
 }
-
 
 
 

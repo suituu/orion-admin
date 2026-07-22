@@ -271,7 +271,10 @@ getAdmin
 
 } from "../api/admin";
 
-
+import {
+    success,
+    error
+} from "../utils/message";
 
 
 const route = useRoute();
@@ -393,10 +396,9 @@ headers:headers()
 
 
 
-alert(
+success(
 "密码修改成功"
 );
-
 
 
 }catch(err){
@@ -405,10 +407,9 @@ alert(
 console.error(err);
 
 
-alert(
+error(
 "修改失败"
 );
-
 
 }
 

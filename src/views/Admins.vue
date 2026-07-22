@@ -260,9 +260,12 @@ import {
 
 getAdmins
 
-} from "../api/admin";
+}from "../api/admin";
 
-
+import {
+    success,
+    error
+} from "../utils/message";
 
 import axios from "axios";
 
@@ -425,8 +428,7 @@ headers:getHeaders()
 
 
 
-alert("管理员创建成功");
-
+success("管理员创建成功");
 
 loadAdmins();
 
@@ -438,8 +440,7 @@ loadAdmins();
 console.error(err);
 
 
-alert("创建失败");
-
+error("创建失败");
 
 }
 
@@ -491,8 +492,7 @@ headers:getHeaders()
 
 
 
-alert("删除成功");
-
+success("删除成功");
 
 loadAdmins();
 
@@ -504,8 +504,7 @@ loadAdmins();
 console.error(err);
 
 
-alert("删除失败");
-
+error("删除失败");
 
 }
 

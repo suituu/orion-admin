@@ -156,7 +156,9 @@ import {
     adminLogin
 } from "../api/admin";
 
-
+import {
+    error
+} from "../utils/message";
 
 const username = ref("");
 
@@ -183,7 +185,6 @@ async function login(){
             password.value
 
         );
-console.log("LOGIN DATA:", res.data);
 
 
         localStorage.setItem(
@@ -210,12 +211,9 @@ localStorage.setItem(
 
 
 
-        alert(
-
-            "登录失败，请检查账号和密码"
-
-        );
-
+error(
+    "登录失败，请检查账号和密码"
+     );
 
     }
 

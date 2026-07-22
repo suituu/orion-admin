@@ -88,12 +88,22 @@ ORION 智能设备运营中心
 <div class="header-right">
 
 
-<span class="admin-name">
+<div class="admin-info">
+
+<div class="admin-name">
 
 {{ admin.username || "管理员" }}
 
-</span>
+</div>
 
+
+<div class="admin-role">
+
+{{ admin.role || "-" }}
+
+</div>
+
+</div>
 
 <el-button
 
@@ -532,7 +542,37 @@ gap:16px;
 
 }
 
+.admin-info{
 
+display:flex;
+
+flex-direction:column;
+
+align-items:flex-end;
+
+}
+
+
+.admin-name{
+
+font-size:14px;
+
+font-weight:600;
+
+color:#334155;
+
+}
+
+
+.admin-role{
+
+font-size:12px;
+
+color:#94A3B8;
+
+margin-top:2px;
+
+}
 
 .admin-name{
 
