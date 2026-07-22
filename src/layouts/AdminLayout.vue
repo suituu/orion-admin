@@ -175,7 +175,8 @@ Refresh,
 
 User,
 
-Setting
+Setting,
+Document
 
 } from "@element-plus/icons-vue";
 
@@ -282,11 +283,21 @@ const menus = [
     roles:[
         "super"
     ]
+},
+
+
+{
+    path:"/audit-logs",
+    title:"操作日志",
+    icon:Document,
+    roles:[
+        "super",
+        "admin"
+    ]
 }
 
 
 ];
-
 
 const visibleMenus = menus.filter(
 

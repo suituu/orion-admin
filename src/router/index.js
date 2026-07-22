@@ -265,7 +265,17 @@ const routes = [
             ]
         }
     },
-
+{
+    path:"audit-logs",
+    name:"AuditLogs",
+    component:()=>import("../views/AuditLogs.vue"),
+    meta:{
+        roles:[
+            "super",
+            "admin"
+        ]
+    }
+},
 
     ]
 
