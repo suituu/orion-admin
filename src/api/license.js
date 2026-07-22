@@ -1,33 +1,20 @@
-import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import request from "../utils/request";
 
 
-function getAuthHeaders() {
-    return {
-        Authorization:
-            `Bearer ${localStorage.getItem("token")}`,
-    };
-}
+export function getLicenses(){
 
-
-export function getLicenses() {
-
-    return axios.get(
-        `${API_BASE}/api/licenses`,
-        {
-            headers: getAuthHeaders(),
-        }
+    return request.get(
+        "/api/licenses"
     );
 
 }
-export function getLicense(licenseKey) {
 
-    return axios.get(
-        `${API_BASE}/api/licenses/${licenseKey}`,
-        {
-            headers: getAuthHeaders(),
-        }
+
+
+export function getLicense(licenseKey){
+
+    return request.get(
+        `/api/licenses/${licenseKey}`
     );
 
 }

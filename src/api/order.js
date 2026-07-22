@@ -1,56 +1,36 @@
-import axios from "axios";
-
-
-const API_BASE = import.meta.env.VITE_API_BASE;
-
-
-
-function getAuthHeaders(){
-
-    return {
-
-        Authorization:
-            `Bearer ${localStorage.getItem("token")}`,
-
-    };
-
-}
+import request from "../utils/request";
 
 
 
 export function getOrders(){
 
-    return axios.get(
-
-        `${API_BASE}/api/admin/orders`,
-
-        {
-            headers:getAuthHeaders(),
-        }
-
+    return request.get(
+        "/api/admin/orders"
     );
 
 }
 
-export function getOrder(id) {
 
-    return axios.get(
-        `${API_BASE}/api/admin/orders/${id}`,
-        {
-            headers: getAuthHeaders(),
-        }
+
+
+
+export function getOrder(id){
+
+    return request.get(
+        `/api/admin/orders/${id}`
     );
 
 }
+
+
+
+
 
 export function payOrder(id){
 
-    return axios.put(
-        `${API_BASE}/api/admin/orders/${id}/pay`,
-        {},
-        {
-            headers:getAuthHeaders(),
-        }
+    return request.put(
+        `/api/admin/orders/${id}/pay`,
+        {}
     );
 
 }

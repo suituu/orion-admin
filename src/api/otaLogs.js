@@ -1,28 +1,11 @@
-import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import request from "../utils/request";
 
 
-function getAuthHeaders() {
 
-    return {
-        Authorization:
-            `Bearer ${localStorage.getItem("token")}`,
-    };
+export function getOtaLogs(){
 
-}
-
-
-/**
- * Get OTA logs
- */
-export function getOtaLogs() {
-
-    return axios.get(
-        `${API_BASE}/api/admin/ota-logs`,
-        {
-            headers: getAuthHeaders(),
-        }
+    return request.get(
+        "/api/admin/ota-logs"
     );
 
 }

@@ -1,62 +1,35 @@
-import axios from "axios";
-
-
-const API_BASE = import.meta.env.VITE_API_BASE;
-
-
-
-function getAuthHeaders(){
-
-    return {
-
-        Authorization:
-        `Bearer ${localStorage.getItem("token")}`,
-
-    };
-
-}
+import request from "../utils/request";
 
 
 
 export function getUsers(){
 
-    return axios.get(
-
-        `${API_BASE}/api/users`,
-
-        {
-            headers:getAuthHeaders(),
-        }
-
+    return request.get(
+        "/api/users"
     );
 
 }
+
+
 
 
 
 export function getUser(id){
 
-    return axios.get(
-
-        `${API_BASE}/api/users/${id}`,
-
-        {
-            headers:getAuthHeaders(),
-        }
-
+    return request.get(
+        `/api/users/${id}`
     );
 
 }
+
+
+
+
+
 export function getUserDetail(id){
 
-    return axios.get(
-
-        `${API_BASE}/api/users/${id}/detail`,
-
-        {
-            headers:getAuthHeaders(),
-        }
-
+    return request.get(
+        `/api/users/${id}/detail`
     );
 
 }

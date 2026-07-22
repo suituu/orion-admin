@@ -1,20 +1,32 @@
 <template>
 
-<div>
+<div class="page">
 
 
 <div class="page-header">
 
+
+<div>
+
 <h2>
-Admin Management
+管理员管理
 </h2>
+
+
+<span>
+管理后台账号和权限角色
+</span>
+
+
+</div>
+
 
 
 <el-button
 type="primary"
 @click="createAdmin"
 >
-Create Admin
+新增管理员
 </el-button>
 
 
@@ -22,67 +34,115 @@ Create Admin
 
 
 
+
+
 <el-table
+
 :data="admins"
+
 border
+
 style="width:100%;margin-top:20px;"
+
 >
 
 
+
+
 <el-table-column
+
 prop="id"
-label="ID"
+
+label="编号"
+
 width="80"
+
 />
 
 
+
+
+
 <el-table-column
+
 prop="username"
-label="Username"
+
+label="账号"
+
 width="200"
-/>
 
-
-<el-table-column
-prop="role"
-label="Role"
-width="150"
-/>
-
-
-<el-table-column
-prop="created_at"
-label="Created At"
-width="200"
 />
 
 
 
+
+
 <el-table-column
-label="Action"
-width="220"
+
+label="角色"
+
+width="160"
+
 >
 
 
 <template #default="scope">
 
 
-<el-button
-type="primary"
-size="small"
-@click="viewAdmin(scope.row.id)"
->
-View
-</el-button>
+<el-tag
 
+v-if="scope.row.role==='super_admin'"
 
-<el-button
 type="danger"
-size="small"
-@click="deleteAdmin(scope.row.id)"
+
 >
-Delete
-</el-button>
+
+超级管理员
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else-if="scope.row.role==='operator'"
+
+type="warning"
+
+>
+
+运营人员
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else-if="scope.row.role==='support'"
+
+type="success"
+
+>
+
+客服
+
+</el-tag>
+
+
+
+<el-tag
+
+v-else
+
+type="info"
+
+>
+
+管理员
+
+</el-tag>
+
 
 
 </template>
@@ -92,42 +152,131 @@ Delete
 
 
 
+
+
+<el-table-column
+
+prop="created_at"
+
+label="创建时间"
+
+width="200"
+
+/>
+
+
+
+
+
+<el-table-column
+
+label="操作"
+
+width="220"
+
+>
+
+
+
+<template #default="scope">
+
+
+<el-button
+
+type="primary"
+
+size="small"
+
+@click="viewAdmin(scope.row.id)"
+
+>
+
+查看详情
+
+</el-button>
+
+
+
+<el-button
+
+type="danger"
+
+size="small"
+
+@click="deleteAdmin(scope.row.id)"
+
+>
+
+删除
+
+</el-button>
+
+
+
+</template>
+
+
+
+</el-table-column>
+
+
+
+
 </el-table>
+
 
 
 </div>
 
+
 </template>
+
+
+
 
 
 <script setup>
 
 
 import {
-    ref,
-    onMounted
+
+ref,
+
+onMounted
+
 } from "vue";
 
 
+
 import {
-    useRouter
+
+useRouter
+
 } from "vue-router";
 
 
+
 import {
-    getAdmins
+
+getAdmins
+
 } from "../api/admin";
+
 
 
 import axios from "axios";
 
 
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+
+
+const API_BASE =
+import.meta.env.VITE_API_BASE;
 
 
 
 const admins = ref([]);
+
 
 
 const router = useRouter();
@@ -135,16 +284,28 @@ const router = useRouter();
 
 
 
+
+
+
 function getHeaders(){
 
-    return {
 
-        Authorization:
-        `Bearer ${localStorage.getItem("token")}`
+return {
 
-    };
+
+Authorization:
+
+`Bearer ${localStorage.getItem("token")}`
+
+
+};
+
 
 }
+
+
+
+
 
 
 
@@ -152,24 +313,31 @@ function getHeaders(){
 async function loadAdmins(){
 
 
-    try{
+try{
 
 
-        const res = await getAdmins();
+const res = await getAdmins();
 
 
-        admins.value =
-        res.data.data;
+
+admins.value =
+
+res.data.data;
 
 
-    }catch(err){
 
-        console.error(err);
+}catch(err){
 
-    }
+
+console.error(err);
 
 
 }
+
+
+}
+
+
 
 
 
@@ -177,11 +345,19 @@ async function loadAdmins(){
 
 function viewAdmin(id){
 
-    router.push(
-        `/admins/${id}`
-    );
+
+router.push(
+
+`/admins/${id}`
+
+);
+
 
 }
+
+
+
+
 
 
 
@@ -189,64 +365,90 @@ function viewAdmin(id){
 async function createAdmin(){
 
 
-    const username =
-    prompt("Username");
 
-
-    const password =
-    prompt("Password");
-
-
-    if(!username || !password){
-
-        return;
-
-    }
+const username =
+prompt("请输入管理员账号");
 
 
 
-    try{
+const password =
+prompt("请输入管理员密码");
 
 
-        await axios.post(
-
-            `${API_BASE}/api/admin/admins`,
-
-            {
-
-                username,
-
-                password,
-
-                role:"admin"
-
-            },
-
-            {
-
-                headers:getHeaders()
-
-            }
-
-        );
 
 
-        alert("Admin created");
+if(!username || !password){
 
 
-        loadAdmins();
-
-
-    }catch(err){
-
-        console.error(err);
-
-        alert("Create failed");
-
-    }
+return;
 
 
 }
+
+
+
+
+try{
+
+
+await axios.post(
+
+
+`${API_BASE}/api/admin/admins`,
+
+
+{
+
+
+username,
+
+
+password,
+
+
+role:"admin"
+
+
+},
+
+
+{
+
+
+headers:getHeaders()
+
+
+}
+
+
+);
+
+
+
+alert("管理员创建成功");
+
+
+loadAdmins();
+
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+alert("创建失败");
+
+
+}
+
+
+}
+
+
+
+
 
 
 
@@ -255,46 +457,63 @@ async function createAdmin(){
 async function deleteAdmin(id){
 
 
-    if(!confirm("Delete this admin?")){
-
-        return;
-
-    }
+if(!confirm("确定删除该管理员？")){
 
 
-
-    try{
-
-
-        await axios.delete(
-
-            `${API_BASE}/api/admin/admins/${id}`,
-
-            {
-
-                headers:getHeaders()
-
-            }
-
-        );
-
-
-        alert("Deleted");
-
-
-        loadAdmins();
-
-
-    }catch(err){
-
-        console.error(err);
-
-        alert("Delete failed");
-
-    }
+return;
 
 
 }
+
+
+
+
+
+try{
+
+
+await axios.delete(
+
+
+`${API_BASE}/api/admin/admins/${id}`,
+
+
+{
+
+
+headers:getHeaders()
+
+
+}
+
+
+);
+
+
+
+alert("删除成功");
+
+
+loadAdmins();
+
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+alert("删除失败");
+
+
+}
+
+
+}
+
+
+
 
 
 
@@ -302,18 +521,30 @@ async function deleteAdmin(id){
 onMounted(()=>{
 
 
-    loadAdmins();
+loadAdmins();
 
 
 });
-
 
 
 </script>
 
 
 
+
+
 <style scoped>
+
+
+.page{
+
+
+padding:20px;
+
+
+}
+
+
 
 
 .page-header{
@@ -321,12 +552,44 @@ onMounted(()=>{
 
 display:flex;
 
+
 justify-content:space-between;
+
 
 align-items:center;
 
 
 }
+
+
+
+
+.page-header h2{
+
+
+margin:0;
+
+
+font-size:22px;
+
+
+}
+
+
+
+
+
+.page-header span{
+
+
+color:#909399;
+
+
+font-size:14px;
+
+
+}
+
 
 
 </style>

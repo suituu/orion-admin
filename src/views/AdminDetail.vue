@@ -1,56 +1,90 @@
 <template>
 
-<div>
+<div class="page">
 
 
 <div class="page-header">
 
+<div>
+
 <h2>
-Admin Detail
+管理员详情
 </h2>
 
+<span>
+查看账号权限和安全信息
+</span>
+
+</div>
 
 </div>
 
 
 
+
+
 <el-card
 v-if="admin"
-style="margin-top:20px;"
+class="section-card"
 >
 
 
+<template #header>
+
+基础信息
+
+</template>
+
+
+
 <el-descriptions
-title="Admin Information"
 border
 :column="2"
 >
 
 
-<el-descriptions-item label="ID">
+<el-descriptions-item label="编号">
 
-{{ admin.id }}
-
-</el-descriptions-item>
-
-
-
-<el-descriptions-item label="Username">
-
-{{ admin.username }}
+{{admin.id}}
 
 </el-descriptions-item>
 
 
 
-<el-descriptions-item label="Role">
+<el-descriptions-item label="账号">
+
+{{admin.username}}
+
+</el-descriptions-item>
+
+
+
+
+
+<el-descriptions-item label="角色">
 
 
 <el-tag
-v-if="admin.role === 'super'"
+v-if="admin.role==='super'"
+type="danger"
+>
+超级管理员
+</el-tag>
+
+
+<el-tag
+v-else-if="admin.role==='operator'"
+type="warning"
+>
+运营人员
+</el-tag>
+
+
+<el-tag
+v-else-if="admin.role==='support'"
 type="success"
 >
-Super Admin
+客服
 </el-tag>
 
 
@@ -58,17 +92,20 @@ Super Admin
 v-else
 type="info"
 >
-{{ admin.role }}
+管理员
 </el-tag>
+
 
 
 </el-descriptions-item>
 
 
 
-<el-descriptions-item label="Created At">
 
-{{ admin.created_at }}
+
+<el-descriptions-item label="创建时间">
+
+{{admin.created_at}}
 
 </el-descriptions-item>
 
@@ -77,28 +114,132 @@ type="info"
 </el-descriptions>
 
 
+</el-card>
 
-<div
-style="margin-top:20px;"
+
+
+
+
+
+
+<el-card
+v-if="admin"
+class="section-card"
 >
 
-<el-button
-type="warning"
-@click="resetPassword"
+
+<template #header>
+
+权限信息
+
+</template>
+
+
+
+<el-descriptions
+border
+:column="2"
 >
-Reset Password
-</el-button>
 
 
-</div>
+<el-descriptions-item label="用户管理">
+
+<el-tag type="success">
+允许
+</el-tag>
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="订单管理">
+
+<el-tag type="success">
+允许
+</el-tag>
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="支付管理">
+
+<el-tag type="success">
+允许
+</el-tag>
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="设备管理">
+
+<el-tag type="success">
+允许
+</el-tag>
+
+</el-descriptions-item>
+
+
+
+<el-descriptions-item label="OTA管理">
+
+<el-tag type="success">
+允许
+</el-tag>
+
+</el-descriptions-item>
+
+
+
+</el-descriptions>
 
 
 </el-card>
 
 
-</div>
+
+
+
+
+
+<el-card
+v-if="admin"
+class="section-card"
+>
+
+
+<template #header>
+
+安全操作
 
 </template>
+
+
+
+<el-button
+type="warning"
+@click="resetPassword"
+>
+
+修改密码
+
+</el-button>
+
+
+
+</el-card>
+
+
+
+
+
+</div>
+
+
+</template>
+
+
 
 
 
@@ -106,13 +247,18 @@ Reset Password
 
 
 import {
-    ref,
-    onMounted
+
+ref,
+
+onMounted
+
 } from "vue";
 
 
 import {
-    useRoute
+
+useRoute
+
 } from "vue-router";
 
 
@@ -120,12 +266,16 @@ import axios from "axios";
 
 
 import {
-    getAdmin
+
+getAdmin
+
 } from "../api/admin";
 
 
 
+
 const route = useRoute();
+
 
 
 const admin = ref(null);
@@ -138,16 +288,24 @@ import.meta.env.VITE_API_BASE;
 
 
 
+
 function headers(){
 
-    return {
 
-        Authorization:
-        `Bearer ${localStorage.getItem("token")}`
+return {
 
-    };
+
+Authorization:
+
+`Bearer ${localStorage.getItem("token")}`
+
+
+};
+
 
 }
+
+
 
 
 
@@ -156,27 +314,33 @@ function headers(){
 async function loadAdmin(){
 
 
-    try{
+try{
 
 
-        const res =
-        await getAdmin(
-            route.params.id
-        );
+const res =
+await getAdmin(
+route.params.id
+);
 
 
-        admin.value =
-        res.data.data;
+
+admin.value =
+res.data.data;
 
 
-    }catch(err){
 
-        console.error(err);
+}catch(err){
 
-    }
+
+console.error(err);
 
 
 }
+
+
+}
+
+
 
 
 
@@ -185,56 +349,73 @@ async function loadAdmin(){
 async function resetPassword(){
 
 
-    const password =
-    prompt(
-        "New password"
-    );
+const password =
+prompt(
+"请输入新密码"
+);
 
 
 
-    if(!password){
+if(!password){
 
-        return;
+return;
 
-    }
-
-
-
-    try{
+}
 
 
-        await axios.put(
-
-            `${API_BASE}/api/admin/admins/${route.params.id}/password`,
-
-            {
-                password
-            },
-
-            {
-                headers:headers()
-            }
-
-        );
 
 
-        alert(
-            "Password updated"
-        );
+
+try{
 
 
-    }catch(err){
+await axios.put(
 
-        console.error(err);
 
-        alert(
-            "Update failed"
-        );
+`${API_BASE}/api/admin/admins/${route.params.id}/password`,
 
-    }
+
+{
+
+password
+
+},
+
+
+{
+
+headers:headers()
+
+}
+
+
+);
+
+
+
+alert(
+"密码修改成功"
+);
+
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+alert(
+"修改失败"
+);
 
 
 }
+
+
+}
+
+
 
 
 
@@ -242,27 +423,78 @@ async function resetPassword(){
 
 onMounted(()=>{
 
-    loadAdmin();
+
+loadAdmin();
+
 
 });
+
 
 
 </script>
 
 
 
+
+
 <style scoped>
+
+
+.page{
+
+padding:20px;
+
+}
+
 
 
 .page-header{
 
+
 display:flex;
+
 
 justify-content:space-between;
 
+
 align-items:center;
 
+
 }
+
+
+
+.page-header h2{
+
+
+margin:0;
+
+
+}
+
+
+
+.page-header span{
+
+
+color:#909399;
+
+
+font-size:14px;
+
+
+}
+
+
+
+.section-card{
+
+
+margin-top:20px;
+
+
+}
+
 
 
 </style>

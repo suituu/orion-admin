@@ -1,42 +1,28 @@
-import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
-
-function getAuthHeaders() {
-    return {
-        Authorization:
-            `Bearer ${localStorage.getItem("token")}`,
-    };
-}
+import request from "../utils/request";
 
 
-export function getDevices() {
-    return axios.get(
-        `${API_BASE}/api/devices`,
-        {
-            headers: getAuthHeaders(),
-        }
+export function getDevices(){
+
+    return request.get(
+        "/api/devices"
     );
+
 }
 
 
-export function getDevice(deviceId) {
-    return axios.get(
-        `${API_BASE}/api/devices/${deviceId}`,
-        {
-            headers: getAuthHeaders(),
-        }
+export function getDevice(deviceId){
+
+    return request.get(
+        `/api/devices/${deviceId}`
     );
+
 }
 
 
-export function getDeviceOtaLogs(deviceId) {
+export function getDeviceOtaLogs(deviceId){
 
-    return axios.get(
-        `${API_BASE}/api/devices/${deviceId}/ota-logs`,
-        {
-            headers: getAuthHeaders(),
-        }
+    return request.get(
+        `/api/devices/${deviceId}/ota-logs`
     );
 
 }

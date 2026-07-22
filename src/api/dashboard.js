@@ -1,47 +1,31 @@
-import axios from "axios";
-
-
-const API_BASE = import.meta.env.VITE_API_BASE;
-
-
-function getAuthHeaders() {
-
-    return {
-        Authorization:
-            `Bearer ${localStorage.getItem("token")}`,
-    };
-
-}
+import request from "../utils/request";
 
 
 
-export function getDashboard() {
+export function getDashboard(){
 
-    return axios.get(
-        `${API_BASE}/api/admin/dashboard`,
-        {
-            headers: getAuthHeaders(),
-        }
+    return request.get(
+        "/api/admin/dashboard"
     );
 
 }
-export function getRevenueTrend() {
 
-    return axios.get(
-        `${API_BASE}/api/admin/dashboard/revenue`,
-        {
-            headers: getAuthHeaders(),
-        }
+
+
+export function getRevenueTrend(){
+
+    return request.get(
+        "/api/admin/dashboard/revenue"
     );
 
 }
-export function getOrderTrend() {
 
-    return axios.get(
-        `${API_BASE}/api/admin/dashboard/orders`,
-        {
-            headers: getAuthHeaders(),
-        }
+
+
+export function getOrderTrend(){
+
+    return request.get(
+        "/api/admin/dashboard/orders"
     );
 
 }

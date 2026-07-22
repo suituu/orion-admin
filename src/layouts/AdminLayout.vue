@@ -23,7 +23,6 @@ ORION
 </div>
 
 
-
 <el-menu
 
 router
@@ -35,150 +34,30 @@ class="menu"
 >
 
 
-<el-menu-item index="/">
+<el-menu-item
+
+v-for="menu in visibleMenus"
+
+:key="menu.path"
+
+:index="menu.path"
+
+>
+
 
 <el-icon>
-<HomeFilled />
+
+<component :is="menu.icon" />
+
 </el-icon>
 
-<span>
-{{ $t("menu.dashboard") }}
-</span>
-
-</el-menu-item>
-
-
-
-
-<el-menu-item index="/products">
-
-<el-icon>
-<Box />
-</el-icon>
 
 <span>
-{{ $t("menu.products") }}
+
+{{menu.title}}
+
 </span>
 
-</el-menu-item>
-
-
-
-
-<el-menu-item index="/firmwares">
-
-<el-icon>
-<UploadFilled />
-</el-icon>
-
-<span>
-{{ $t("menu.firmwares") }}
-</span>
-
-</el-menu-item>
-
-
-
-
-<el-menu-item index="/devices">
-
-<el-icon>
-<Monitor />
-</el-icon>
-
-<span>
-{{ $t("menu.devices") }}
-</span>
-
-</el-menu-item>
-
-
-
-
-<el-menu-item index="/licenses">
-
-<el-icon>
-<Key />
-</el-icon>
-
-<span>
-{{ $t("menu.licenses") }}
-</span>
-
-</el-menu-item>
-
-
-
-
-<el-menu-item index="/orders">
-
-<el-icon>
-<ShoppingCart />
-</el-icon>
-
-<span>
-{{ $t("menu.orders") }}
-</span>
-
-</el-menu-item>
-
-
-
-
-<el-menu-item index="/payments">
-
-<el-icon>
-<Money />
-</el-icon>
-
-<span>
-{{ $t("menu.payments") }}
-</span>
-
-</el-menu-item>
-
-
-
-
-<el-menu-item index="/ota-logs">
-
-<el-icon>
-<Refresh />
-</el-icon>
-
-<span>
-{{ $t("menu.ota") }}
-</span>
-
-</el-menu-item>
-
-
-
-
-<el-menu-item index="/users">
-
-<el-icon>
-<User />
-</el-icon>
-
-<span>
-{{ $t("menu.users") }}
-</span>
-
-</el-menu-item>
-
-
-
-
-<el-menu-item index="/admins">
-
-<el-icon>
-<Setting />
-</el-icon>
-
-<span>
-{{ $t("menu.admins") }}
-</span>
 
 </el-menu-item>
 
@@ -211,10 +90,9 @@ ORION 智能设备运营中心
 
 <span class="admin-name">
 
-管理员
+{{ admin.username || "管理员" }}
 
 </span>
-
 
 
 <el-button
@@ -294,7 +172,119 @@ Setting
 
 
 const router = useRouter();
+const admin = JSON.parse(
+    localStorage.getItem("admin") || "{}"
+);
 
+
+const menus = [
+
+{
+    path:"/",
+    title:"控制台",
+    icon:HomeFilled,
+    roles:[
+        "super",
+        "admin",
+        "operator",
+        "support"
+    ]
+},
+
+
+{
+    path:"/users",
+    title:"用户管理",
+    icon:User,
+    roles:[
+        "super",
+        "admin",
+        "operator",
+        "support"
+    ]
+},
+
+
+{
+    path:"/orders",
+    title:"订单管理",
+    icon:ShoppingCart,
+    roles:[
+        "super",
+        "admin",
+        "operator"
+    ]
+},
+
+
+{
+    path:"/payments",
+    title:"支付管理",
+    icon:Money,
+    roles:[
+        "super",
+        "admin",
+        "operator"
+    ]
+},
+
+
+{
+    path:"/devices",
+    title:"设备管理",
+    icon:Monitor,
+    roles:[
+        "super",
+        "admin",
+        "support"
+    ]
+},
+
+
+{
+    path:"/licenses",
+    title:"授权管理",
+    icon:Key,
+    roles:[
+        "super",
+        "admin",
+        "support"
+    ]
+},
+
+
+{
+    path:"/firmwares",
+    title:"OTA固件",
+    icon:UploadFilled,
+    roles:[
+        "super",
+        "admin",
+        "support"
+    ]
+},
+
+
+{
+    path:"/admins",
+    title:"管理员",
+    icon:Setting,
+    roles:[
+        "super"
+    ]
+}
+
+
+];
+
+
+const visibleMenus = menus.filter(
+
+menu =>
+
+menu.roles.includes(admin.role)
+
+);
 
 
 function logout(){
@@ -304,6 +294,9 @@ localStorage.removeItem(
 "token"
 );
 
+localStorage.removeItem(
+"admin"
+);
 
 router.push(
 "/login"

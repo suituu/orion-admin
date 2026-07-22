@@ -1,14 +1,11 @@
-import axios from "axios";
-
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import request from "../utils/request";
 
 
 
 export function getProducts(){
 
-    return axios.get(
-        `${API_BASE}/api/products`
+    return request.get(
+        "/api/products"
     );
 
 }

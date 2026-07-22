@@ -183,7 +183,7 @@ async function login(){
             password.value
 
         );
-
+console.log("LOGIN DATA:", res.data);
 
 
         localStorage.setItem(
@@ -194,7 +194,10 @@ async function login(){
 
         );
 
-
+localStorage.setItem(
+    "admin",
+    JSON.stringify(res.data.admin)
+);
 
         router.push("/");
 

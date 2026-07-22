@@ -1,41 +1,54 @@
-import axios from "axios";
+import request from "../utils/request";
 
-const API_BASE = import.meta.env.VITE_API_BASE;
 
-function getAuthHeaders() {
-    const token = localStorage.getItem("token");
 
-    return {
-        Authorization: `Bearer ${token}`,
-    };
+export function getFirmwares(){
+
+    return request.get(
+        "/api/admin/firmwares"
+    );
+
 }
 
-export function getFirmwares() {
-    return axios.get(`${API_BASE}/api/admin/firmwares`, {
-        headers: getAuthHeaders(),
-    });
+
+
+
+
+export function getFirmware(id){
+
+    return request.get(
+        `/api/admin/firmwares/${id}`
+    );
+
 }
 
-export function getFirmware(id) {
-    return axios.get(
-        `${API_BASE}/api/admin/firmwares/${id}`,
+
+
+
+
+export function deleteFirmware(id){
+
+    return request.delete(
+        `/api/admin/firmwares/${id}`
+    );
+
+}
+
+
+
+
+
+export function uploadFirmware(formData){
+
+    return request.post(
+        "/api/admin/firmwares",
+        formData,
         {
-            headers: getAuthHeaders(),
+            headers:{
+                "Content-Type":
+                "multipart/form-data",
+            },
         }
     );
-}
 
-export function deleteFirmware(id) {
-    return axios.delete(`${API_BASE}/api/admin/firmwares/${id}`, {
-        headers: getAuthHeaders(),
-    });
-}
-
-export function uploadFirmware(formData) {
-    return axios.post(`${API_BASE}/api/admin/firmwares`, formData, {
-        headers: {
-            ...getAuthHeaders(),
-            "Content-Type": "multipart/form-data",
-        },
-    });
 }
