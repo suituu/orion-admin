@@ -34,7 +34,146 @@ type="primary"
 
 
 
+<el-dialog
 
+v-model="createDialogVisible"
+
+title="新增管理员"
+
+width="520px"
+
+:close-on-click-modal="false"
+
+>
+
+
+<el-form
+
+label-width="90px"
+
+@submit.prevent="submitCreateAdmin"
+
+>
+
+
+<el-form-item label="管理员账号">
+
+
+<el-input
+
+v-model="createForm.username"
+
+placeholder="请输入管理员账号"
+
+maxlength="64"
+
+clearable
+
+autocomplete="off"
+
+/>
+
+
+</el-form-item>
+
+
+
+<el-form-item label="登录密码">
+
+
+<el-input
+
+v-model="createForm.password"
+
+type="password"
+
+placeholder="请输入 8-128 位密码"
+
+maxlength="128"
+
+show-password
+
+autocomplete="new-password"
+
+/>
+
+
+</el-form-item>
+
+
+
+<el-form-item label="角色">
+
+
+<el-select
+
+v-model="createForm.role"
+
+placeholder="请选择角色"
+
+:loading="rolesLoading"
+
+style="width:100%;"
+
+>
+
+
+<el-option
+
+v-for="role in roles"
+
+:key="role.id"
+
+:label="roleLabel(role.name)"
+
+:value="role.name"
+
+/>
+
+
+</el-select>
+
+
+</el-form-item>
+
+
+</el-form>
+
+
+
+<template #footer>
+
+
+<el-button
+
+@click="createDialogVisible=false"
+
+>
+
+取消
+
+</el-button>
+
+
+<el-button
+
+type="primary"
+
+:loading="createSubmitting"
+
+@click="submitCreateAdmin"
+
+>
+
+创建管理员
+
+</el-button>
+
+
+</template>
+
+
+</el-dialog>
 
 <el-table
 
@@ -258,7 +397,9 @@ useRouter
 
 import {
 
-getAdmins
+getAdmins,
+
+getRoles
 
 }from "../api/admin";
 
@@ -280,7 +421,23 @@ import.meta.env.VITE_API_BASE;
 
 const admins = ref([]);
 
+const roles = ref([]);
 
+const rolesLoading = ref(false);
+
+const createDialogVisible = ref(false);
+
+const createSubmitting = ref(false);
+
+const createForm = ref({
+
+    username:"",
+
+    password:"",
+
+    role:"admin"
+
+});
 
 const router = useRouter();
 
@@ -365,22 +522,156 @@ router.push(
 
 
 
+function roleLabel(roleName){
+
+
+const labels = {
+
+    super:"超级管理员",
+
+    admin:"管理员",
+
+    operator:"运营人员",
+
+    support:"客服"
+
+};
+
+
+return labels[roleName] || roleName;
+
+
+}
+
+
+
+
+
+async function loadRoles(){
+
+
+rolesLoading.value = true;
+
+
+try{
+
+
+const res =
+await getRoles();
+
+
+roles.value =
+Array.isArray(res.data.data)
+? res.data.data
+: [];
+
+
+if(
+    !roles.value.some(
+        role =>
+        role.name === createForm.value.role
+    )
+){
+
+
+const defaultRole =
+roles.value.find(
+    role =>
+    role.name === "admin"
+);
+
+
+createForm.value.role =
+defaultRole
+? defaultRole.name
+: roles.value[0]?.name || "";
+
+
+}
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+roles.value = [];
+
+
+error(
+"角色列表加载失败"
+);
+
+
+}finally{
+
+
+rolesLoading.value = false;
+
+
+}
+
+
+}
+
+
+
+
+
 async function createAdmin(){
 
 
+createForm.value = {
+
+    username:"",
+
+    password:"",
+
+    role:"admin"
+
+};
+
+
+createDialogVisible.value = true;
+
+
+if(roles.value.length === 0){
+
+
+await loadRoles();
+
+
+}
+
+
+}
+
+
+
+
+
+async function submitCreateAdmin(){
+
 
 const username =
-prompt("请输入管理员账号");
-
+createForm.value.username.trim();
 
 
 const password =
-prompt("请输入管理员密码");
+createForm.value.password;
 
 
+const role =
+createForm.value.role;
 
 
-if(!username || !password){
+if(!username){
+
+
+error(
+"请输入管理员账号"
+);
 
 
 return;
@@ -389,6 +680,44 @@ return;
 }
 
 
+if(
+    typeof password !== "string" ||
+    password.length < 8 ||
+    password.length > 128
+){
+
+
+error(
+"密码长度必须为 8-128 位"
+);
+
+
+return;
+
+
+}
+
+
+if(
+    !roles.value.some(
+        item =>
+        item.name === role
+    )
+){
+
+
+error(
+"请选择有效角色"
+);
+
+
+return;
+
+
+}
+
+
+createSubmitting.value = true;
 
 
 try{
@@ -402,24 +731,18 @@ await axios.post(
 
 {
 
+    username,
 
-username,
+    password,
 
-
-password,
-
-
-role:"admin"
-
+    role
 
 },
 
 
 {
 
-
-headers:getHeaders()
-
+    headers:getHeaders()
 
 }
 
@@ -427,11 +750,26 @@ headers:getHeaders()
 );
 
 
+success(
+"管理员创建成功"
+);
 
-success("管理员创建成功");
 
-loadAdmins();
+createDialogVisible.value = false;
 
+
+createForm.value = {
+
+    username:"",
+
+    password:"",
+
+    role:"admin"
+
+};
+
+
+await loadAdmins();
 
 
 }catch(err){
@@ -440,7 +778,45 @@ loadAdmins();
 console.error(err);
 
 
-error("创建失败");
+const backendError =
+err.response?.data?.error;
+
+
+const errorMessages = {
+
+    "Invalid username":
+        "管理员账号无效",
+
+    "Password must be between 8 and 128 characters":
+        "密码长度必须为 8-128 位",
+
+    "Invalid role":
+        "角色无效",
+
+    "Role not found":
+        "角色不存在",
+
+    "Admin username already exists":
+        "管理员账号已存在",
+
+    "Only super administrators can create super accounts":
+        "只有超级管理员可以创建超级管理员账号"
+
+};
+
+
+error(
+errorMessages[backendError] ||
+backendError ||
+"创建失败"
+);
+
+
+}finally{
+
+
+createSubmitting.value = false;
+
 
 }
 
