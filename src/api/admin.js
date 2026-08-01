@@ -78,3 +78,13 @@ export function updateAdminRole(id, role){
     );
 
 }
+export function updateRolePermissions(roleId, permissions){
+
+    return request.put(
+        `/api/admin/roles/${roleId}/permissions`,
+        {
+            permissions
+        }
+    );
+
+}
