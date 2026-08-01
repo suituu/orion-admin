@@ -220,6 +220,9 @@ const routes = [
                 "admin",
                 "operator",
                 "support"
+            ],
+            permissions:[
+                "USER_VIEW"
             ]
         }
     },
@@ -236,6 +239,9 @@ const routes = [
                 "admin",
                 "operator",
                 "support"
+            ],
+            permissions:[
+                "USER_VIEW"
             ]
         }
     },
