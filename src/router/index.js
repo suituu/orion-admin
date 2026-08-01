@@ -166,10 +166,8 @@ const routes = [
         name:"Payments",
         component:()=>import("../views/Payments.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "operator"
+            permissions:[
+                "ORDER_VIEW"
             ]
         }
     },
@@ -181,10 +179,8 @@ const routes = [
         name:"PaymentDetail",
         component:()=>import("../views/PaymentDetail.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "operator"
+            permissions:[
+                "ORDER_VIEW"
             ]
         }
     },
