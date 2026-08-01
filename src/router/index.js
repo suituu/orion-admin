@@ -253,6 +253,16 @@ const routes = [
         }
     },
 
+    {
+        path:"role-permissions",
+        name:"RolePermissions",
+        component:()=>import("../views/RolePermissions.vue"),
+        meta:{
+            roles:[
+                "super"
+            ]
+        }
+    },
 
 
     {
