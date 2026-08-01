@@ -313,66 +313,116 @@ routes
 
 router.beforeEach((to,from,next)=>{
 
-
-const token =
-localStorage.getItem("token");
-
+    const token =
+        localStorage.getItem("token");
 
 
+    if(to.path === "/login"){
 
-if(to.path === "/login"){
+        return next();
 
-    return next();
-
-}
-
+    }
 
 
+    if(!token){
+
+        return next("/login");
+
+    }
 
 
-if(!token){
-
-    return next("/login");
-
-}
+    let admin = {};
 
 
+    try{
+
+        admin = JSON.parse(
+            localStorage.getItem("admin") || "{}"
+        );
+
+    }catch(err){
+
+        console.error(
+            "invalid admin storage:",
+            err
+        );
 
 
+        localStorage.removeItem(
+            "token"
+        );
 
 
-const admin =
-JSON.parse(
-    localStorage.getItem("admin") || "{}"
-);
+        localStorage.removeItem(
+            "admin"
+        );
 
 
+        return next("/login");
 
-const role =
-admin.role;
-
-
+    }
 
 
-
-if(
-    to.meta.roles &&
-    !to.meta.roles.includes(role)
-){
-
-return next("/403");
-
-    return next("/");
+    const role =
+        admin.role;
 
 
-}
+    const permissions =
+        Array.isArray(
+            admin.permissions
+        )
+            ? admin.permissions
+            : [];
 
 
+    if(
+        to.meta.roles &&
+        !to.meta.roles.includes(role)
+    ){
+
+        return next("/403");
+
+    }
 
 
+    if(to.meta.permissions){
 
-next();
+        const requiredPermissions =
+            Array.isArray(
+                to.meta.permissions
+            )
+                ? to.meta.permissions
+                : [
+                    to.meta.permissions
+                ];
 
+
+        const hasPermission =
+            to.meta.permissionMode === "any"
+                ? requiredPermissions.some(
+                    permission =>
+                        permissions.includes(
+                            permission
+                        )
+                )
+                : requiredPermissions.every(
+                    permission =>
+                        permissions.includes(
+                            permission
+                        )
+                );
+
+
+        if(!hasPermission){
+
+            return next("/403");
+
+        }
+
+    }
+
+
+    next();
 
 });
 
