@@ -285,6 +285,16 @@ const menus = [
     ]
 },
 
+{
+    path:"/role-permissions",
+    title:"角色权限",
+    icon:Setting,
+    roles:[
+        "super"
+    ]
+},
+
+
 
 {
     path:"/audit-logs",
