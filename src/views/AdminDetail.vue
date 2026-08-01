@@ -1,4 +1,4 @@
-w<template>
+<template>
 
 <div class="page">
 
