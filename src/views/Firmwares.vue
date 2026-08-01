@@ -19,12 +19,12 @@
 
 
 <el-button
+v-if="canReleaseFirmware"
 type="primary"
 @click="uploadDialogVisible=true"
 >
 上传固件
 </el-button>
-
 
 </div>
 
@@ -223,6 +223,7 @@ size="small"
 
 
 <el-button
+v-if="canReleaseFirmware"
 type="danger"
 size="small"
 @click="handleDelete(scope.row.id)"
@@ -476,7 +477,38 @@ const firmwares = ref([]);
 
 
 const router = useRouter();
+let admin = {};
 
+
+try{
+
+  admin = JSON.parse(
+    localStorage.getItem("admin") || "{}"
+  );
+
+}catch(err){
+
+  console.error(
+    "invalid admin storage:",
+    err
+  );
+
+}
+
+
+const permissions =
+  Array.isArray(
+    admin.permissions
+  )
+    ? admin.permissions
+    : [];
+
+
+const canReleaseFirmware =
+  admin.role === "super" ||
+  permissions.includes(
+    "OTA_RELEASE"
+  );
 
 const uploadDialogVisible = ref(false);
 
