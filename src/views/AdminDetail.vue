@@ -1,4 +1,4 @@
-<template>
+w<template>
 
 <div class="page">
 
@@ -223,8 +223,122 @@ type="warning"
 </el-button>
 
 
+<el-button
+v-if="canChangeRole()"
+type="primary"
+@click="openRoleDialog"
+>
+
+修改角色
+
+</el-button>
+
 
 </el-card>
+
+
+
+<el-dialog
+
+v-model="roleDialogVisible"
+
+title="修改管理员角色"
+
+width="500px"
+
+:close-on-click-modal="false"
+
+>
+
+
+<el-form
+label-width="90px"
+@submit.prevent="submitRoleChange"
+>
+
+
+<el-form-item label="管理员账号">
+
+{{admin?.username}}
+
+</el-form-item>
+
+
+<el-form-item label="当前角色">
+
+<el-tag>
+{{roleLabel(admin?.role)}}
+</el-tag>
+
+</el-form-item>
+
+
+<el-form-item label="新角色">
+
+<el-select
+
+v-model="selectedRole"
+
+placeholder="请选择角色"
+
+style="width:100%;"
+
+>
+
+
+<el-option
+
+v-for="role in roleOptions"
+
+:key="role.id"
+
+:label="roleLabel(role.name)"
+
+:value="role.name"
+
+/>
+
+
+</el-select>
+
+</el-form-item>
+
+
+</el-form>
+
+
+<template #footer>
+
+
+<el-button
+:disabled="roleUpdating"
+@click="roleDialogVisible=false"
+>
+
+取消
+
+</el-button>
+
+
+<el-button
+
+type="primary"
+
+:loading="roleUpdating"
+
+@click="submitRoleChange"
+
+>
+
+确认修改
+
+</el-button>
+
+
+</template>
+
+
+</el-dialog>
 
 
 
@@ -269,7 +383,9 @@ getRoles,
 
 getPermissions,
 
-getRolePermissions
+getRolePermissions,
+
+updateAdminRole
 
 } from "../api/admin";
 
@@ -290,6 +406,20 @@ const permissionItems = ref([]);
 const permissionsLoading = ref(false);
 
 const permissionsError = ref("");
+
+const roleOptions = ref([]);
+
+const roleDialogVisible = ref(false);
+
+const selectedRole = ref("");
+
+const roleUpdating = ref(false);
+
+
+const currentAdmin =
+JSON.parse(
+localStorage.getItem("admin") || "{}"
+);
 
 const API_BASE =
 import.meta.env.VITE_API_BASE;
@@ -322,6 +452,216 @@ function permissionLabel(code){
 
 
     return labels[code] || code;
+
+}
+
+function roleLabel(roleName){
+
+
+const labels = {
+
+    super:"超级管理员",
+
+    admin:"管理员",
+
+    operator:"运营人员",
+
+    support:"客服"
+
+};
+
+
+return labels[roleName] || roleName;
+
+
+}
+
+
+
+
+
+function canChangeRole(){
+
+
+return Boolean(
+    admin.value &&
+    [
+        "super",
+        "admin"
+    ].includes(
+        currentAdmin.role
+    ) &&
+    String(currentAdmin.id) !==
+    String(admin.value.id) &&
+    (
+        currentAdmin.role === "super" ||
+        admin.value.role !== "super"
+    )
+);
+
+
+}
+
+
+
+
+
+function openRoleDialog(){
+
+
+if(!canChangeRole()){
+
+return;
+
+}
+
+
+selectedRole.value =
+admin.value.role;
+
+
+roleDialogVisible.value = true;
+
+
+}
+
+
+
+
+
+async function submitRoleChange(){
+
+
+if(!admin.value){
+
+return;
+
+}
+
+
+if(!canChangeRole()){
+
+
+error(
+"不能修改自己的角色"
+);
+
+
+return;
+
+
+}
+
+
+const role =
+selectedRole.value;
+
+
+if(
+    !roleOptions.value.some(
+        item =>
+        item.name === role
+    )
+){
+
+
+error(
+"请选择有效角色"
+);
+
+
+return;
+
+
+}
+
+
+if(role === admin.value.role){
+
+
+roleDialogVisible.value = false;
+
+
+return;
+
+
+}
+
+
+roleUpdating.value = true;
+
+
+try{
+
+
+await updateAdminRole(
+admin.value.id,
+role
+);
+
+
+success(
+"管理员角色修改成功"
+);
+
+
+roleDialogVisible.value = false;
+
+
+await loadAdmin();
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+const backendError =
+err.response?.data?.error;
+
+
+const errorMessages = {
+
+    "Cannot change your own role":
+        "不能修改自己的角色",
+
+    "Role is required":
+        "请选择角色",
+
+    "Invalid role":
+        "角色无效",
+
+    "Role not found":
+        "角色不存在",
+
+    "Admin not found":
+        "管理员不存在",
+
+    "Only super administrators can assign the super role":
+        "只有超级管理员可以授予超级管理员角色",
+
+    "Only super administrators can change super account roles":
+        "只有超级管理员可以修改超级管理员角色"
+
+};
+
+
+error(
+errorMessages[backendError] ||
+backendError ||
+"管理员角色修改失败"
+);
+
+
+}finally{
+
+
+roleUpdating.value = false;
+
+
+}
+
 
 }
 
@@ -402,12 +742,19 @@ getPermissions()
 ]);
 
 
-const roles =
-Array.isArray(
-rolesResponse.data.data
+roleOptions.value =
+(
+    Array.isArray(
+        rolesResponse.data.data
+    )
+    ? rolesResponse.data.data
+    : []
 )
-? rolesResponse.data.data
-: [];
+.filter(
+    role =>
+    currentAdmin.role === "super" ||
+    role.name !== "super"
+);
 
 
 const allPermissions =
@@ -435,8 +782,7 @@ permission => permission.code
 
 }else{
 
-
-const role = roles.find(
+const role = roleOptions.value.find(
 item =>
 item.name === admin.value.role
 );
