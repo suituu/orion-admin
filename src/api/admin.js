@@ -37,3 +37,34 @@ export function getAdmin(id){
     );
 
 }
+export function getRoles(){
+
+    return request.get(
+        "/api/admin/roles"
+    );
+
+}
+
+
+
+
+
+export function getPermissions(){
+
+    return request.get(
+        "/api/admin/permissions"
+    );
+
+}
+
+
+
+
+
+export function getRolePermissions(roleId){
+
+    return request.get(
+        `/api/admin/roles/${roleId}/permissions`
+    );
+
+}
