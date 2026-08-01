@@ -91,7 +91,7 @@ width="160"
 
 <el-tag
 
-v-if="scope.row.role==='super_admin'"
+v-if="scope.row.role==='super'"
 
 type="danger"
 
