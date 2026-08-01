@@ -478,15 +478,19 @@ permission => permission.code
 
 
 permissionItems.value =
-allPermissions.map(
+allPermissions
+.filter(
+permission =>
+allowedCodes.has(
+permission.code
+)
+)
+.map(
 permission => ({
 
 ...permission,
 
-allowed:
-allowedCodes.has(
-permission.code
-)
+allowed:true
 
 })
 );
