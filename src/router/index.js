@@ -80,10 +80,8 @@ const routes = [
         name:"Devices",
         component:()=>import("../views/Devices.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "support"
+            permissions:[
+                "DEVICE_VIEW"
             ]
         }
     },
@@ -95,10 +93,9 @@ const routes = [
         name:"DeviceDetail",
         component:()=>import("../views/DeviceDetail.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "support"
+            permissions:[
+                "DEVICE_VIEW",
+                "OTA_VIEW"
             ]
         }
     },
