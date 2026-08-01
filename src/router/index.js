@@ -140,10 +140,8 @@ const routes = [
         name:"Orders",
         component:()=>import("../views/Orders.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "operator"
+            permissions:[
+                "ORDER_VIEW"
             ]
         }
     },
@@ -155,10 +153,8 @@ const routes = [
         name:"OrderDetail",
         component:()=>import("../views/OrderDetail.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "operator"
+            permissions:[
+                "ORDER_VIEW"
             ]
         }
     },
