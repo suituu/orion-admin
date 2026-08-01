@@ -50,10 +50,8 @@ const routes = [
         name:"Firmwares",
         component:()=>import("../views/Firmwares.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "support"
+            permissions:[
+                "OTA_VIEW"
             ]
         }
     },
@@ -65,10 +63,8 @@ const routes = [
         name:"FirmwareDetail",
         component:()=>import("../views/FirmwareDetail.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "support"
+            permissions:[
+                "OTA_VIEW"
             ]
         }
     },
