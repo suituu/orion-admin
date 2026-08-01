@@ -189,10 +189,8 @@ const routes = [
         name:"OtaLogs",
         component:()=>import("../views/OtaLogs.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "support"
+            permissions:[
+                "OTA_VIEW"
             ]
         }
     },
