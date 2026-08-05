@@ -183,9 +183,19 @@ Document
 
 
 const router = useRouter();
+
+
 const admin = JSON.parse(
     localStorage.getItem("admin") || "{}"
 );
+
+
+const permissions =
+    Array.isArray(
+        admin.permissions
+    )
+        ? admin.permissions
+        : [];
 
 
 const menus = [
@@ -207,11 +217,8 @@ const menus = [
     path:"/users",
     title:"用户管理",
     icon:User,
-    roles:[
-        "super",
-        "admin",
-        "operator",
-        "support"
+    permissions:[
+        "USER_VIEW"
     ]
 },
 
@@ -220,10 +227,8 @@ const menus = [
     path:"/orders",
     title:"订单管理",
     icon:ShoppingCart,
-    roles:[
-        "super",
-        "admin",
-        "operator"
+    permissions:[
+        "ORDER_VIEW"
     ]
 },
 
@@ -232,10 +237,8 @@ const menus = [
     path:"/payments",
     title:"支付管理",
     icon:Money,
-    roles:[
-        "super",
-        "admin",
-        "operator"
+    permissions:[
+        "ORDER_VIEW"
     ]
 },
 
@@ -244,10 +247,8 @@ const menus = [
     path:"/devices",
     title:"设备管理",
     icon:Monitor,
-    roles:[
-        "super",
-        "admin",
-        "support"
+    permissions:[
+        "DEVICE_VIEW"
     ]
 },
 
@@ -268,10 +269,8 @@ const menus = [
     path:"/firmwares",
     title:"OTA固件",
     icon:UploadFilled,
-    roles:[
-        "super",
-        "admin",
-        "support"
+    permissions:[
+        "OTA_VIEW"
     ]
 },
 
@@ -285,6 +284,7 @@ const menus = [
     ]
 },
 
+
 {
     path:"/role-permissions",
     title:"角色权限",
@@ -295,28 +295,54 @@ const menus = [
 },
 
 
-
 {
     path:"/audit-logs",
     title:"操作日志",
     icon:Document,
-    roles:[
-        "super",
-        "admin"
+    permissions:[
+        "AUDIT_VIEW"
     ]
 }
 
 
 ];
 
+
 const visibleMenus = menus.filter(
+    menu => {
 
-menu =>
+        if(admin.role === "super"){
 
-menu.roles.includes(admin.role)
+            return true;
 
+        }
+
+
+        if(menu.permissions){
+
+            return menu.permissions.every(
+                permission =>
+                    permissions.includes(
+                        permission
+                    )
+            );
+
+        }
+
+
+        if(menu.roles){
+
+            return menu.roles.includes(
+                admin.role
+            );
+
+        }
+
+
+        return false;
+
+    }
 );
-
 
 function logout(){
 
