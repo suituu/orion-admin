@@ -264,26 +264,24 @@ const routes = [
             ]
         }
     },
-{
-    path:"audit-logs",
-    name:"AuditLogs",
-    component:()=>import("../views/AuditLogs.vue"),
-    meta:{
-        roles:[
-            "super",
-            "admin"
-        ]
-    }
-},
+
+
+    {
+        path:"audit-logs",
+        name:"AuditLogs",
+        component:()=>import("../views/AuditLogs.vue"),
+        meta:{
+            permissions:[
+                "AUDIT_VIEW"
+            ]
+        }
+    },
 
     ]
 
 }
 
 ];
-
-
-
 
 
 const router=createRouter({
