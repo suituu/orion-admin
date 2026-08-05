@@ -35,12 +35,6 @@ const routes = [
         path:"products",
         name:"Products",
         component:()=>import("../views/Products.vue"),
-        meta:{
-            roles:[
-                "super",
-                "admin"
-            ]
-        }
     },
 
 
