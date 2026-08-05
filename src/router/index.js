@@ -193,18 +193,11 @@ const routes = [
         name:"Users",
         component:()=>import("../views/Users.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "operator",
-                "support"
-            ],
             permissions:[
                 "USER_VIEW"
             ]
         }
     },
-
 
 
     {
@@ -212,18 +205,11 @@ const routes = [
         name:"UserDetail",
         component:()=>import("../views/UserDetail.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "operator",
-                "support"
-            ],
             permissions:[
                 "USER_VIEW"
             ]
         }
     },
-
 
 
     {
