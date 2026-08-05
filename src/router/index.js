@@ -103,14 +103,11 @@ const routes = [
         name:"Licenses",
         component:()=>import("../views/Licenses.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "support"
+            permissions:[
+                "USER_VIEW"
             ]
         }
     },
-
 
 
     {
@@ -118,10 +115,8 @@ const routes = [
         name:"LicenseDetail",
         component:()=>import("../views/LicenseDetail.vue"),
         meta:{
-            roles:[
-                "super",
-                "admin",
-                "support"
+            permissions:[
+                "USER_VIEW"
             ]
         }
     },
