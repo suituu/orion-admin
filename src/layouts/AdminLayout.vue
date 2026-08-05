@@ -257,10 +257,8 @@ const menus = [
     path:"/licenses",
     title:"授权管理",
     icon:Key,
-    roles:[
-        "super",
-        "admin",
-        "support"
+    permissions:[
+        "USER_VIEW"
     ]
 },
 
