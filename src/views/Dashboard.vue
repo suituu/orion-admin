@@ -4,11 +4,17 @@
 class="dashboard"
 v-loading="loading"
 >
-
+<el-alert
+v-if="!canViewDashboard && !canViewOrders"
+title="当前角色暂无控制台数据权限"
+type="info"
+:closable="false"
+/>
 <!-- 核心数据 -->
 
 
 <el-row
+v-if="canViewDashboard"
 :gutter="20"
 class="stats-row"
 >
@@ -113,6 +119,8 @@ class="card-number"
 
 
 <el-row
+
+v-if="canViewDashboard"
 
 :gutter="20"
 
@@ -230,6 +238,8 @@ class="stats-row"
 
 <el-row
 
+v-if="canViewOrders"
+
 :gutter="20"
 
 class="chart-row"
@@ -311,6 +321,8 @@ class="chart"
 
 
 <el-row
+
+v-if="canViewDashboard"
 
 :gutter="20"
 
@@ -465,8 +477,10 @@ class="info-row"
 <!-- 最近升级记录 -->
 
 
-<el-card class="table-card">
-
+<el-card
+v-if="canViewDashboard"
+class="table-card"
+>
 
 <template #header>
 
@@ -577,10 +591,11 @@ width="180"
 
 <el-card
 
+v-if="canViewDashboard"
+
 class="table-card"
 
 >
-
 
 <template #header>
 
@@ -732,6 +747,8 @@ width="180"
 
 
 <el-card
+
+v-if="canViewDashboard"
 
 class="table-card"
 
@@ -908,6 +925,33 @@ import {
 import {
   error
 } from "../utils/message";
+const admin = JSON.parse(
+  localStorage.getItem("admin") || "{}"
+);
+
+
+const permissions =
+  Array.isArray(
+    admin.permissions
+  )
+    ? admin.permissions
+    : [];
+
+
+const canViewDashboard =
+  admin.role === "super" ||
+  permissions.includes(
+    "AUDIT_VIEW"
+  );
+
+
+const canViewOrders =
+  admin.role === "super" ||
+  permissions.includes(
+    "ORDER_VIEW"
+  );
+
+
 const loading = ref(false);
 
 const data = ref({
@@ -1184,21 +1228,26 @@ function resizeCharts(){
 
 onMounted(async()=>{
 
+  if(canViewDashboard){
 
- await loadDashboard();
+    await loadDashboard();
 
-
- await loadRevenueChart();
-
-
- await loadOrderChart();
+  }
 
 
+  if(canViewOrders){
 
- window.addEventListener(
+    await loadRevenueChart();
+
+    await loadOrderChart();
+
+  }
+
+
+  window.addEventListener(
     "resize",
     resizeCharts
- );
+  );
 
 
 });
